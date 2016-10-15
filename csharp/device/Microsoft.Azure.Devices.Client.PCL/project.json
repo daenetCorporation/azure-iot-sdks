@@ -1,11 +1,18 @@
 ﻿{
+  "supports": {
+    "net46.app": {},
+    "uwp.10.0.app": {},
+    "dnxcore50.app": {}
+  },
   "dependencies": {
+    "Microsoft.NETCore": "5.0.0",
+    "Microsoft.NETCore.Portable.Compatibility": "1.0.0",
     "Newtonsoft.Json": "6.0.8",
-    "PCLCrypto": "1.0.86",
     "Validation": "2.2.8"
   },
   "frameworks": {
-    ".NETPortable,Version=v4.5,Profile=Profile111": {}
-  },
-  "supports": {}
+    "dotnet": {
+      "imports": "portable-net452+win81"
+    }
+  }
 }

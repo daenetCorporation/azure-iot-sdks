@@ -140,6 +140,7 @@
     </Content>
     <Compile Include="DeviceEventSender.cs" />
     <Compile Include="DeviceEventListener.cs" />
+    <Compile Include="EventHubListener.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

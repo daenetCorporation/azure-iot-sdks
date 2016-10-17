@@ -11,7 +11,8 @@ namespace IotHubCommander
 {
     internal class DeviceEventListener
     {
-        ConsoleColor m_Clr = ConsoleColor.Cyan;
+        ConsoleColor m_FeedbackClr = ConsoleColor.Cyan;
+        ConsoleColor m_MsgRvcClr = ConsoleColor.Cyan;
 
         private bool? autoCommit;
         private string connStr;
@@ -35,7 +36,7 @@ namespace IotHubCommander
 
         private async Task starReceivingCommands()
         {
-            Console.ForegroundColor = m_Clr;
+            Console.ForegroundColor = m_FeedbackClr;
             Console.WriteLine("\nStarted Receiving cloud to device messages from service");
             Console.ResetColor();
 
@@ -50,10 +51,11 @@ namespace IotHubCommander
                     continue;
                 }
 
-                Console.ForegroundColor = m_Clr;
+                Console.ForegroundColor = m_MsgRvcClr;
                 Console.WriteLine($"Received message: {receivedMessage.MessageId} - {Encoding.UTF8.GetString(receivedMessage.GetBytes())}");
                
                 Console.WriteLine();
+                Console.ForegroundColor = m_FeedbackClr;
                 Console.WriteLine("Enter 'a' for Abandon or 'c' for Complete");
                 Console.ResetColor();
 
@@ -65,7 +67,7 @@ namespace IotHubCommander
                     {
                         await m_DeviceClient.AbandonAsync(receivedMessage);
 
-                        Console.ForegroundColor = m_Clr;
+                        Console.ForegroundColor = m_FeedbackClr;
                         Console.WriteLine("Command abandoned successfully :)!");
                         Console.ResetColor();
                     }
@@ -73,13 +75,13 @@ namespace IotHubCommander
                     {
                         await m_DeviceClient.CompleteAsync(receivedMessage);
                     
-                        Console.ForegroundColor = m_Clr;
+                        Console.ForegroundColor = m_FeedbackClr;
                         Console.WriteLine("Command completed successfully :)!");
                         Console.ResetColor();
                     }
                     else
                     {
-                        Console.ForegroundColor = m_Clr;
+                        Console.ForegroundColor = m_FeedbackClr;
                         Console.WriteLine("Receiving of commands has been stopped!");
                         Console.ResetColor();
                         break;

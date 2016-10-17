@@ -14,7 +14,7 @@ namespace IotHubCommander
         {
             try
             {
-                string connStr = "";
+                string connStr = "TODO";
 
                 // -send -connStr connection_string -cmdDelay 5 -eventFile c:\temp\eventdata.csv -templateFile c:\jsontemplate.txt 
                 //DeviceEventSender devEmu = new DeviceEventSender(connStr: connStr, commandDelayInSec: 10, evetFile:"TestData.csv", templateFile:"JsonTemplate.txt" );

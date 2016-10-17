@@ -11,7 +11,7 @@ namespace IotHubCommander
 {
     internal class DeviceEventListener
     {
-        ConsoleColor m_FeedbackClr = ConsoleColor.Cyan;
+        ConsoleColor m_FeedbackClr = ConsoleColor.Cyan; 
         ConsoleColor m_MsgRvcClr = ConsoleColor.Cyan;
 
         private bool? autoCommit;

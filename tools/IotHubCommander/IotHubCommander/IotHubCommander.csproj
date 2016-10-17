@@ -138,7 +138,6 @@
     <Content Include="JsonTemplate.txt">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Compile Include="Class1.cs" />
     <Compile Include="DeviceEventSender.cs" />
     <Compile Include="DeviceEventListener.cs" />
     <Compile Include="EventHubListener.cs" />

@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace IotHubCommander
 {
-    internal class DeviceEventSender
+    internal class DeviceEventSender : IHubModule
     {
         private int commandDelayInSec;
         private string connStr;

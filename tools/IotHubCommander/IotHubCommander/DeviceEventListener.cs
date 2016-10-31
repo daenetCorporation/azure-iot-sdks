@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace IotHubCommander
 {
-    internal class DeviceEventListener
+    internal class DeviceEventListener : IHubModule
     {
         ConsoleColor m_FeedbackClr = ConsoleColor.Cyan; 
         ConsoleColor m_MsgRvcClr = ConsoleColor.Cyan;

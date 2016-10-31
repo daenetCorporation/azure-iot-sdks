@@ -16,6 +16,7 @@ namespace IotHubCommander
             try
             {
                 string connStr = "TODO";
+                          
                 // Send events
                 // -send -connStr connection_string -cmdDelay 5 -eventFile c:\temp\eventdata.csv -templateFile c:\jsontemplate.txt 
                 //IHubModule devEmu = new DeviceEventSender(connStr: connStr, commandDelayInSec: 10, evetFile:"TestData.csv", templateFile:"JsonTemplate.txt" );
@@ -44,7 +45,7 @@ namespace IotHubCommander
                 //IHubModule devListener = new DeviceEventListener(connStr: connStr);
                 //var t = devListener.Execute();
 
-                IHubModule module = new EventHubListener(connStr, "enter here 'messages/events' for IoTHub or leave empty for EventHub.", DateTime.UtcNow.AddDays(-2), "TODO");
+                IHubModule module = new EventHubListener(connStr, null,/*"messages/events"*/ DateTime.UtcNow.AddDays(-2), "daenet2");
                 var t = module.Execute();
 
                 t.Wait(Timeout.Infinite);

@@ -15,7 +15,7 @@ namespace IotHubCommander
         {
             try
             {
-                string connStr = "TODO";
+                string connStr = "";
                           
                 // Send events
                 // -send -connStr connection_string -cmdDelay 5 -eventFile c:\temp\eventdata.csv -templateFile c:\jsontemplate.txt 
@@ -29,7 +29,7 @@ namespace IotHubCommander
                 // -listen -connStr connection_string -autoCommit true 
                 //
                 // Abandon all received events automatically
-                // -listen -connStr connection_string -autoCommit true 
+                // -listen -connStr connection_string -autoAbandon true 
                 //
                 // Ask user to complete 'c' or abandon 'a' every received event.
                 //  -listen -connStr connection_string 

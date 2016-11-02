@@ -82,6 +82,10 @@ namespace IotHubCommander
                     }
 
                     string data = Encoding.UTF8.GetString(eventData.GetBytes());
+                    //
+                    // Different color
+                    Console.WriteLine($"{eventData.SystemProperties["DeviceId"]}");
+                    Console.WriteLine($"{eventData.SystemProperties["EnqueedAt//"]}");
                     Console.WriteLine(string.Format("Message received. Partition: {0} Data: '{1}'", partition, data));
 
                     // readProperties(data);

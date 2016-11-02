@@ -39,13 +39,13 @@ namespace IotHubCommander
                 //
                 // Read events form IoTHub or EventHub.
                 // -connectTo=EventHub -connStr -startTime=-3h -consumerGroup=$Default
-                // -connectIotHub -connStr -startTime=-5d -consumerGroup=abc
-                // -connectIotHub -connStr -startTime=now -consumerGroup=abc
+                // -connectTo=IotHub -connStr -startTime=-5d -consumerGroup=abc
+                // -connectTo=IotHub -connStr -startTime=now -consumerGroup=abc
 
                 //IHubModule devListener = new DeviceEventListener(connStr: connStr);
                 //var t = devListener.Execute();
 
-                IHubModule module = new EventHubListener(connStr, null,/*"messages/events"*/ DateTime.UtcNow.AddDays(-2), "daenet2");
+                IHubModule module = new EventHubListener(connStr, null/* "messages/events"*/, DateTime.UtcNow.AddDays(-2), "daenet2");
                 var t = module.Execute();
 
                 t.Wait(Timeout.Infinite);

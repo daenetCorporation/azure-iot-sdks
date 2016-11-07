@@ -9,20 +9,20 @@ using System.Threading.Tasks;
 
 namespace IotHubCommander
 {
-    internal class DeviceEventSender : IHubModule
+    internal class Device2CloudSender : IHubModule
     {
         private int commandDelayInSec;
         private string connStr;
         private string evetFile;
         private string templateFile;
 
-        public DeviceEventSender(string connStr, int commandDelayInSec)
+        public Device2CloudSender(string connStr, int commandDelayInSec)
         {
             this.connStr = connStr;
             this.commandDelayInSec = commandDelayInSec;
         }
 
-        public DeviceEventSender(string connStr, 
+        public Device2CloudSender(string connStr, 
             int commandDelayInSec, 
             string evetFile, 
             string templateFile) : this(connStr, commandDelayInSec)

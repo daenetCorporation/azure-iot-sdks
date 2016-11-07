@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace IotHubCommander
 {
-    internal class DeviceEventListener : IHubModule
+    internal class Cloud2DeviceListener : IHubModule
     {
         ConsoleColor m_FeedbackClr = ConsoleColor.Cyan; 
         ConsoleColor m_MsgRvcClr = ConsoleColor.Cyan;
@@ -18,15 +18,13 @@ namespace IotHubCommander
         private string m_ConnStr;
         private DeviceClient m_DeviceClient;
 
-        public DeviceEventListener(string connStr)
+        public Cloud2DeviceListener(string connStr)
         {
             this.m_DeviceClient = DeviceClient.CreateFromConnectionString(connStr);
             this.m_ConnStr = connStr;
-
-
         }
 
-        public DeviceEventListener(string connStr, CommandAction action) : this(connStr)
+        public Cloud2DeviceListener(string connStr, CommandAction action) : this(connStr)
         {
             this.Action = action;
         }

@@ -155,9 +155,10 @@
     <Content Include="JsonTemplate.txt">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Compile Include="DeviceEventSender.cs" />
-    <Compile Include="DeviceEventListener.cs" />
+    <Compile Include="Device2CloudSender.cs" />
+    <Compile Include="Cloud2DeviceListener.cs" />
     <Compile Include="EventHubListener.cs" />
+    <Compile Include="Extensions.cs" />
     <Compile Include="IHubModule.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

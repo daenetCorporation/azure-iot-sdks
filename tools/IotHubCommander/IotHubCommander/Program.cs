@@ -18,6 +18,8 @@ namespace IotHubCommander
             CommandLineConfigurationProvider cmd = new CommandLineConfigurationProvider(args);
             cmd.Load();
 
+            Task t = null;
+
             string connStr;
             if (cmd.TryGet("listen", out connStr))
             {
@@ -28,7 +30,7 @@ namespace IotHubCommander
                 {
                     if (!Enum.TryParse<CommandAction>(actionStr, true, out action))
                     {
-                        Console.WriteLine("Failed to parse commit value, will use None as default");
+                        Console.WriteLine("Failed to parse commit value, will use default: None");
                         action = CommandAction.None;
                     }
                     string connection_string;
@@ -51,88 +53,32 @@ namespace IotHubCommander
                         }
                     }
                 }
-                    IHubModule devListener = new DeviceEventListener(connStr, action);
-                    var t = devListener.Execute();
-                    // Send events
-                    // -send -connStr connection_string -cmdDelay 5 -eventFile c:\temp\eventdata.csv -templateFile c:\jsontemplate.txt 
-                    //IHubModule devEmu = new DeviceEventSender(connStr: connStr, commandDelayInSec: 10, evetFile:"TestData.csv", templateFile:"JsonTemplate.txt" );
-                    //devEmu.Execute();
-
-                    // 
-                    // Read commands
-                    // 
-                    // Auto commit all received events as completed.
-                    // -listen -connStr connection_string -autoCommit true 
-                    ///--listen=conStr --autoCommit=true/false
-                    // Abandon all received events automatically
-                    // -listen -connStr connection_string -autoAbandon true 
-
-                    // -listen=constr --action=commit
-                    // -listen=constr --action=abandon
-                    // -listen=constr --action=none
-                    //
-                    // Ask user to complete 'c' or abandon 'a' every received event.
-                    //  -listen -connStr connection_string 
-
-
-                    //
-                    // Read events form IoTHub or EventHub.
-                    // -connectTo=EventHub -connStr -startTime=-3h -consumerGroup=$Default
-                    // -connectTo=IotHub -connStr -startTime=-5d -consumerGroup=abc
-                    // -connectTo=IotHub -connStr -startTime=now -consumerGroup=abc
-
-                    //IHubModule devListener = new DeviceEventListener(connStr: connStr);
-                    //var t = devListener.Execute();
-
-                    //IHubModule module = new EventHubListener(connStr, null/* "messages/events"*/, DateTime.UtcNow.AddDays(-2), "daenet2");
-                    //  var t = module.Execute();
-
-                    t.Wait(Timeout.Infinite);
-                
+                    IHubModule devListener = new Cloud2DeviceListener(connStr, action);
+                    t = devListener.Execute();
             }
-
-        }
-
-        // var receivedEvents = 
-
-        private static void SendEvent(CommandLineConfigurationProvider cmdConfig)
-        {
-            //-send =event -connStr=connection_string -cmdDelay 5 -eventFile c:\temp\eventdata.csv -templateFile c:\jsontemplate.txt
-            string connStr;
-            if (cmdConfig.TryGet("connStr", out connStr))
+            else if (1 == 1)
             {
-                string cmdDelay;
-                if (cmdConfig.TryGet("cmdDelay", out cmdDelay))
-                {
-                    string eventFile;
-                    if (cmdConfig.TryGet("eventFile", out eventFile))
-                    {
-                        string templateFile;
-                        if (cmdConfig.TryGet("templateFile", out templateFile))
-                        {
-                            int commandDelayInSec = int.Parse(cmdDelay);
-                            IHubModule devEmu = new DeviceEventSender(connStr, commandDelayInSec, eventFile, templateFile);
-                            devEmu.Execute();
-                        }
-                        else
-                        {
-                            throw new Exception("\"--templateFile\" command not found.");
-                        }
-                    }
-                    else
-                    {
-                        throw new Exception("\"--eventFile\" command not found.");
-                    }
-                }
-                else
-                {
-                    throw new Exception("\"--cmdDelay\" command not found.");
-                }
+                //
+                // Read events form IoTHub or EventHub.
+                // -connectTo=EventHub -connStr -startTime=-3h -consumerGroup=$Default
+                // -connectTo=IotHub -connStr -startTime=-5d -consumerGroup=abc
+                // -connectTo=IotHub -connStr -startTime=now -consumerGroup=abc
             }
-            else
+            else if (2 == 2)
             {
-                throw new Exception("\"--connStr\" command not found.");
+                //IHubModule module = new EventHubListener(connStr, null/* "messages/events"*/, DateTime.UtcNow.AddDays(-2), "daenet2");
+                //  var t = module.Execute();
             }
+            else if (3 == 3)
+            {
+                // Send events
+                // -send -connStr connection_string -cmdDelay 5 -eventFile c:\temp\eventdata.csv -templateFile c:\jsontemplate.txt 
+                //IHubModule devEmu = new DeviceEventSender(connStr: connStr, commandDelayInSec: 10, evetFile:"TestData.csv", templateFile:"JsonTemplate.txt" );
+                //devEmu.Execute();
+            }
+
+            if (t != null)
+                t.Wait(Timeout.Infinite);
         }
     }
 }

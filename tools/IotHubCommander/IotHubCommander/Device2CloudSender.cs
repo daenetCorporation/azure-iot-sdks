@@ -38,25 +38,22 @@ namespace IotHubCommander
 
         public Task Execute()
         {
-            return sendEvent(templateFile,evetFile);
+            return sendEvent();
         }
 
-        private async Task sendEvent(string templateFile, string eventFile)
+        private async Task sendEvent()
         {
             StreamReader readerEventFile = null;
             StreamReader readerTempFile = null;
             try
             {
                 readerEventFile = new StreamReader(File.OpenRead(evetFile));
-                readerTempFile = new StreamReader(File.OpenRead(templateFile));
-
-                var template = readerTempFile.ReadToEnd();
-
-
                 while (!readerEventFile.EndOfStream)
                 {
+                    readerTempFile = new StreamReader(File.OpenRead(templateFile));
+                    var template = readerTempFile.ReadToEnd();
+
                     var value = readerEventFile.ReadLine().Split(';');
-                    //var template = readerTempFile.ReadToEnd();
                     template = template.Replace("@1", value[0]);
                     template = template.Replace("@2", value[1]);
                     template = template.Replace("@3", value[2]);
@@ -66,10 +63,8 @@ namespace IotHubCommander
                     DeviceClient deviceClient = DeviceClient.CreateFromConnectionString(connStr);
 
                     await deviceClient.SendEventAsync(message);
-                    //ServiceClient serviceClient = ServiceClient.CreateFromConnectionString(connStr);
-                    //await serviceClient.SendAsync("2078", message);
 
-                    Console.WriteLine("Event has been sent.");
+                    Console.WriteLine($"{template}{Environment.NewLine} Event has been sent.");
                    // Thread.Sleep(3000);
                 }
             }

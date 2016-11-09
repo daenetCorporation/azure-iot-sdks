@@ -54,14 +54,10 @@ namespace IotHubCommander
                 Console.ForegroundColor = m_MsgRvcClr;
                 Console.WriteLine($"Received message: {receivedMessage.MessageId} - {Encoding.UTF8.GetString(receivedMessage.GetBytes())}");
                
-                Console.WriteLine();
-                Console.ForegroundColor = m_FeedbackClr;
-                Console.WriteLine("Enter 'a' for Abandon or 'c' for Complete");
-                Console.ResetColor();
+                
 
                 try
                 {
-                    //TODO: You have to check it is autoCommit or not 
                     if (Action == CommandAction.Commit)
                     {
                         await m_DeviceClient.CompleteAsync(receivedMessage);
@@ -72,16 +68,20 @@ namespace IotHubCommander
                     }
                     else if (Action == CommandAction.Abandon)
                     {
-                        // todo abandon
-                        Action = CommandAction.Abandon;
-                       
+                        await m_DeviceClient.AbandonAsync(receivedMessage);
+
+                        Console.ForegroundColor = m_FeedbackClr;
+                        Console.WriteLine("Command abandoned successfully :)!");
+                        Console.ResetColor();
+
                     }
                     else if (Action == CommandAction.None)
                     {
+                        Console.WriteLine();
+                        Console.ForegroundColor = m_FeedbackClr;
+                        Console.WriteLine("Enter 'a' for Abandon or 'c' for Complete");
+                        Console.ResetColor();
                         string whatTodo = Console.ReadLine();
-
-
-
                         if (whatTodo == "a")
                         {
                             await m_DeviceClient.AbandonAsync(receivedMessage);
@@ -110,7 +110,7 @@ namespace IotHubCommander
                 }
                 catch (Exception ex)
                 {
-                    Console.WriteLine(ex.Message);
+                    throw new Exception($"{ex.Message}");
                 }
             }
         }

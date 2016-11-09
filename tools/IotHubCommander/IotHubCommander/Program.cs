@@ -39,10 +39,10 @@ namespace IotHubCommander
                                 EventListener(cmdConfig, "messages/events");
                                 break;
                             case "event":
-                                SendEventToDevice(cmdConfig);
+                                SendEventDevice2Cloud(cmdConfig);
                                 break;
                             case "device":
-                                DeviceListener(cmdConfig);
+                                ReceiveCloud2Device(cmdConfig);
                                 break;
                             default:
                                 throw new Exception("Command not found. In order to see more details write \"--help\"");
@@ -67,7 +67,7 @@ namespace IotHubCommander
         }
 
 
-        private static void SendEventToDevice(CommandLineConfigurationProvider cmdConfig)
+        private static void SendEventDevice2Cloud(CommandLineConfigurationProvider cmdConfig)
         {
             //-send =event -connStr=connection_string -cmdDelay 5 -eventFile c:\temp\eventdata.csv -templateFile c:\jsontemplate.txt
             string connStr = cmdConfig.GetArgument("connStr");
@@ -75,7 +75,7 @@ namespace IotHubCommander
             string eventFile = cmdConfig.GetArgument("eventFile");
             string templateFile = cmdConfig.GetArgument("templateFile");
             int commandDelayInSec = int.Parse(cmdDelay);
-            IHubModule devEmu = new DeviceEventSender(connStr, commandDelayInSec, eventFile, templateFile);
+            IHubModule devEmu = new Device2CloudSender(connStr, commandDelayInSec, eventFile, templateFile);
             devEmu.Execute();
         }
 
@@ -135,23 +135,24 @@ namespace IotHubCommander
 
             return time;
         }
-
-        private static void DeviceListener(CommandLineConfigurationProvider cmdConfig)
+        
+        private static void ReceiveCloud2Device(CommandLineConfigurationProvider cmdConfig)
         {
             string connStr = cmdConfig.GetArgument("connStr");
-            string autoCommit = cmdConfig.GetArgument("autoCommit", false);
-
-            if (autoCommit != null)
+            string action = cmdConfig.GetArgument("action",false);
+            CommandAction commandAction;
+            if(Enum.TryParse<CommandAction>(action,true, out commandAction))
             {
-                bool isAutoCommit = bool.Parse(autoCommit);
-                IHubModule devListener = new DeviceEventListener(connStr, isAutoCommit);
+                IHubModule devListener = new Cloud2DeviceListener(connStr, commandAction);
                 var t = devListener.Execute();
             }
             else
             {
-                IHubModule devListener = new DeviceEventListener(connStr);
+                commandAction = CommandAction.None;
+                IHubModule devListener = new Cloud2DeviceListener(connStr, commandAction);
                 var t = devListener.Execute();
             }
+            
         }
 
 
@@ -195,16 +196,17 @@ namespace IotHubCommander
             helpText.AppendLine($"--send=event --connStr=HostName=something.azure-devices.net;DeviceId=123456;SharedAccessKey=2CFsCmqyHvH/5HmRTkD8bR/YbEIU9IM= --cmdDelay=5 --eventFile=TextData1.csv --templateFile=JsonTemplate.txt");
             //--listen=Device --connStr=connection_string --autoCommit=true/false
             helpText.AppendLine();
-            helpText.AppendLine($"- Read Command -");
+            helpText.AppendLine($"- Cloud to Device Listener -");
             helpText.AppendLine($"----------------");
             helpText.AppendLine($"----------------");
             helpText.AppendLine();
             helpText.AppendLine($"   --listen=<\"Device\" for listening event>");
             helpText.AppendLine($"   --connStr=<Connection string for reading event>");
-            helpText.AppendLine($"   --autoCommit=<\"true or false\" all received events as completed>");
+            helpText.AppendLine($"   --action=<\"Abandon, Commit or None\" for abandon, Commit the message. None is default command and will ask you for abandon or commit.>");
             helpText.AppendLine();
             helpText.AppendLine($"- EXAMPLES -");
-            helpText.AppendLine($"--listen=Device --connStr=HostName=something.azure-devices.net;DeviceId=123456;SharedAccessKey=2CFsCmqyHvHHmRTkD8bR/YbEIU9IM= --autoCommit=true");
+            helpText.AppendLine($"--listen=Device --connStr=HostName=something.azure-devices.net;DeviceId=123456;SharedAccessKey=2CFsCmqyHvHHmRTkD8bR/YbEIU9IM= --action=Abandon");
+            helpText.AppendLine($"--listen=Device --connStr=HostName=something.azure-devices.net;DeviceId=123456;SharedAccessKey=2CFsCmqyHvHHmRTkD8bR/YbEIU9IM= --action=Commit");
             //-connectTo=EventHub -connStr=oadölfj -startTime=-3h -consumerGroup=$Default
             helpText.AppendLine();
             helpText.AppendLine($"- Read events form IoTHub or EventHub. -");

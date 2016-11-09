@@ -71,6 +71,7 @@ namespace IotHubCommander
             try
             {
                 var eventHubReceiver = m_EventHubClient.GetConsumerGroup(m_ConsumerGroup).CreateReceiver(partition, m_StartTime);
+                int count = 1;
                 while (true)
                 {
                     EventData eventData = await eventHubReceiver.ReceiveAsync();
@@ -83,17 +84,27 @@ namespace IotHubCommander
                     string data = Encoding.UTF8.GetString(eventData.GetBytes());
                     //
                     // Different color
-                  
+                    if (count % 2 == 0)
+                    {
                         Console.ForegroundColor = ConsoleColor.Cyan;
-                        Console.WriteLine($"{eventData.SystemProperties["x-opt-sequence-number"]}");
-                        Console.WriteLine($"{eventData.SystemProperties["x-opt-offset"]}");
-                        Console.WriteLine($"{eventData.SystemProperties["x-opt-enqueued-time"]}");
-                        Console.WriteLine($"{eventData.SystemProperties["EnqueuedTimeUtc"]}");
-                        Console.WriteLine($"{eventData.SystemProperties["SequenceNumber"]}");
-                        Console.WriteLine($"{eventData.SystemProperties["Offset"]}");
+                        Console.WriteLine($"x-opt-sequence-number : {eventData.SystemProperties["x-opt-sequence-number"]}");
+                        Console.WriteLine($"x-opt-offset: {eventData.SystemProperties["x-opt-offset"]}");
+                        Console.WriteLine($"x-opt-enqueued-time: {eventData.SystemProperties["x-opt-enqueued-time"]}");
                         Console.WriteLine(string.Format("Message received. Partition: {0} Data: '{1}'", partition, data));
+                        Console.WriteLine();
                         Console.ResetColor();
-
+                    }
+                    else
+                    {
+                        Console.ForegroundColor = ConsoleColor.Green;
+                        Console.WriteLine($"x-opt-sequence-number : {eventData.SystemProperties["x-opt-sequence-number"]}");
+                        Console.WriteLine($"x-opt-offset: {eventData.SystemProperties["x-opt-offset"]}");
+                        Console.WriteLine($"x-opt-enqueued-time: {eventData.SystemProperties["x-opt-enqueued-time"]}");
+                        Console.WriteLine(string.Format("Message received. Partition: {0} Data: '{1}'", partition, data));
+                        Console.WriteLine();
+                        Console.ResetColor();
+                    }
+                    count++;
                     // readProperties(data);
                 }
             }

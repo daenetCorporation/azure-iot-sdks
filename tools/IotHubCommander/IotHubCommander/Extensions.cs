@@ -1,11 +1,12 @@
-﻿using Microsoft.Framework.Configuration.CommandLine;
+﻿using Microsoft.Extensions.Configuration.CommandLine;
+using Microsoft.Framework.Configuration.CommandLine;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace IotHubCommander
+namespace MsgSvc.CommandLineTool
 {
     public static class Extensions
     {

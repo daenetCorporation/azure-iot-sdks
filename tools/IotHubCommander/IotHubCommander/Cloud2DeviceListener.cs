@@ -9,24 +9,24 @@ using System.Threading.Tasks;
 
 namespace IotHubCommander
 {
-    internal class DeviceEventListener : IHubModule
+    internal class Cloud2DeviceListener : IHubModule
     {
         ConsoleColor m_FeedbackClr = ConsoleColor.Cyan; 
         ConsoleColor m_MsgRvcClr = ConsoleColor.Cyan;
 
-        private bool? autoCommit;
-        private string connStr;
+        private CommandAction Action;
+        private string m_ConnStr;
         private DeviceClient m_DeviceClient;
 
-        public DeviceEventListener(string connStr)
+        public Cloud2DeviceListener(string connStr)
         {
             this.m_DeviceClient = DeviceClient.CreateFromConnectionString(connStr);
-            this.connStr = connStr;
+            this.m_ConnStr = connStr;
         }
 
-        public DeviceEventListener(string connStr, bool? autoCommit) : this(connStr)
+        public Cloud2DeviceListener(string connStr, CommandAction action) : this(connStr)
         {
-            this.autoCommit = autoCommit;
+            this.Action = action;
         }
 
         public Task Execute()
@@ -53,26 +53,35 @@ namespace IotHubCommander
 
                 Console.ForegroundColor = m_MsgRvcClr;
                 Console.WriteLine($"Received message: {receivedMessage.MessageId} - {Encoding.UTF8.GetString(receivedMessage.GetBytes())}");
+               
+                Console.WriteLine();
+                Console.ForegroundColor = m_FeedbackClr;
+                Console.WriteLine("Enter 'a' for Abandon or 'c' for Complete");
+                Console.ResetColor();
 
-                if ((bool)autoCommit)
+                try
                 {
-                    await m_DeviceClient.CompleteAsync(receivedMessage);
-
-                    Console.ForegroundColor = m_FeedbackClr;
-                    Console.WriteLine("Command completed successfully :)!");
-                    Console.ResetColor();
-                }
-                else
-                {
-                    Console.WriteLine();
-                    Console.ForegroundColor = m_FeedbackClr;
-                    Console.WriteLine("Enter 'a' for Abandon or 'c' for Complete");
-                    Console.ResetColor();
-
-                    string whatTodo = Console.ReadLine();
-
-                    try
+                    //TODO: You have to check it is autoCommit or not 
+                    if (Action == CommandAction.Commit)
                     {
+                        await m_DeviceClient.CompleteAsync(receivedMessage);
+
+                        Console.ForegroundColor = m_FeedbackClr;
+                        Console.WriteLine("Command completed successfully (AutoCommit) :)!");
+                        Console.ResetColor();
+                    }
+                    else if (Action == CommandAction.Abandon)
+                    {
+                        // todo abandon
+                        Action = CommandAction.Abandon;
+                       
+                    }
+                    else if (Action == CommandAction.None)
+                    {
+                        string whatTodo = Console.ReadLine();
+
+
+
                         if (whatTodo == "a")
                         {
                             await m_DeviceClient.AbandonAsync(receivedMessage);
@@ -96,13 +105,21 @@ namespace IotHubCommander
                             Console.ResetColor();
                             break;
                         }
+
                     }
-                    catch (Exception ex)
-                    {
-                        throw new Exception(ex.Message);
-                    }
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine(ex.Message);
                 }
             }
         }
+    }
+
+    public enum CommandAction
+    {
+        None = 0,
+        Commit = 1,
+        Abandon = 2
     }
 }

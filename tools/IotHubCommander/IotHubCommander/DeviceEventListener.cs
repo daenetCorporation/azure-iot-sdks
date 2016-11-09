@@ -53,43 +53,54 @@ namespace IotHubCommander
 
                 Console.ForegroundColor = m_MsgRvcClr;
                 Console.WriteLine($"Received message: {receivedMessage.MessageId} - {Encoding.UTF8.GetString(receivedMessage.GetBytes())}");
-               
-                Console.WriteLine();
-                Console.ForegroundColor = m_FeedbackClr;
-                Console.WriteLine("Enter 'a' for Abandon or 'c' for Complete");
-                Console.ResetColor();
 
-                string whatTodo = Console.ReadLine();
-
-                try
+                if ((bool)autoCommit)
                 {
-                    if (whatTodo == "a")
-                    {
-                        await m_DeviceClient.AbandonAsync(receivedMessage);
+                    await m_DeviceClient.CompleteAsync(receivedMessage);
 
-                        Console.ForegroundColor = m_FeedbackClr;
-                        Console.WriteLine("Command abandoned successfully :)!");
-                        Console.ResetColor();
-                    }
-                    else if (whatTodo == "c")
-                    {
-                        await m_DeviceClient.CompleteAsync(receivedMessage);
-                    
-                        Console.ForegroundColor = m_FeedbackClr;
-                        Console.WriteLine("Command completed successfully :)!");
-                        Console.ResetColor();
-                    }
-                    else
-                    {
-                        Console.ForegroundColor = m_FeedbackClr;
-                        Console.WriteLine("Receiving of commands has been stopped!");
-                        Console.ResetColor();
-                        break;
-                    }
+                    Console.ForegroundColor = m_FeedbackClr;
+                    Console.WriteLine("Command completed successfully :)!");
+                    Console.ResetColor();
                 }
-                catch (Exception ex)
+                else
                 {
-                    Console.WriteLine(ex.Message);
+                    Console.WriteLine();
+                    Console.ForegroundColor = m_FeedbackClr;
+                    Console.WriteLine("Enter 'a' for Abandon or 'c' for Complete");
+                    Console.ResetColor();
+
+                    string whatTodo = Console.ReadLine();
+
+                    try
+                    {
+                        if (whatTodo == "a")
+                        {
+                            await m_DeviceClient.AbandonAsync(receivedMessage);
+
+                            Console.ForegroundColor = m_FeedbackClr;
+                            Console.WriteLine("Command abandoned successfully :)!");
+                            Console.ResetColor();
+                        }
+                        else if (whatTodo == "c")
+                        {
+                            await m_DeviceClient.CompleteAsync(receivedMessage);
+
+                            Console.ForegroundColor = m_FeedbackClr;
+                            Console.WriteLine("Command completed successfully :)!");
+                            Console.ResetColor();
+                        }
+                        else
+                        {
+                            Console.ForegroundColor = m_FeedbackClr;
+                            Console.WriteLine("Receiving of commands has been stopped!");
+                            Console.ResetColor();
+                            break;
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        throw new Exception(ex.Message);
+                    }
                 }
             }
         }

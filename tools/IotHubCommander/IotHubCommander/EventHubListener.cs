@@ -71,7 +71,6 @@ namespace IotHubCommander
             try
             {
                 var eventHubReceiver = m_EventHubClient.GetConsumerGroup(m_ConsumerGroup).CreateReceiver(partition, m_StartTime);
-
                 while (true)
                 {
                     EventData eventData = await eventHubReceiver.ReceiveAsync();
@@ -84,9 +83,16 @@ namespace IotHubCommander
                     string data = Encoding.UTF8.GetString(eventData.GetBytes());
                     //
                     // Different color
-                    Console.WriteLine($"{eventData.SystemProperties["DeviceId"]}");
-                    Console.WriteLine($"{eventData.SystemProperties["EnqueedAt//"]}");
-                    Console.WriteLine(string.Format("Message received. Partition: {0} Data: '{1}'", partition, data));
+                  
+                        Console.ForegroundColor = ConsoleColor.Cyan;
+                        Console.WriteLine($"{eventData.SystemProperties["x-opt-sequence-number"]}");
+                        Console.WriteLine($"{eventData.SystemProperties["x-opt-offset"]}");
+                        Console.WriteLine($"{eventData.SystemProperties["x-opt-enqueued-time"]}");
+                        Console.WriteLine($"{eventData.SystemProperties["EnqueuedTimeUtc"]}");
+                        Console.WriteLine($"{eventData.SystemProperties["SequenceNumber"]}");
+                        Console.WriteLine($"{eventData.SystemProperties["Offset"]}");
+                        Console.WriteLine(string.Format("Message received. Partition: {0} Data: '{1}'", partition, data));
+                        Console.ResetColor();
 
                     // readProperties(data);
                 }

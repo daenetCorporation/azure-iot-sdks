@@ -14,6 +14,9 @@ using System.Threading.Tasks;
 
 namespace IotHubCommander
 {
+    /// <summary>
+    /// Send Event Device to Cloud
+    /// </summary>
     internal class Device2CloudSender : IHubModule
     {
         private int commandDelayInSec;
@@ -21,12 +24,24 @@ namespace IotHubCommander
         private string evetFile;
         private string templateFile;
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="connStr"> Device Connection string</param>
+        /// <param name="commandDelayInSec">Command delay time</param>
         public Device2CloudSender(string connStr, int commandDelayInSec)
         {
             this.connStr = connStr;
             this.commandDelayInSec = commandDelayInSec;
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="connStr">Connection string for device</param>
+        /// <param name="commandDelayInSec">Command delay time</param>
+        /// <param name="evetFile">csv formated event file. Every value should be ';' separated</param>
+        /// <param name="templateFile">Event template</param>
         public Device2CloudSender(string connStr, 
             int commandDelayInSec, 
             string evetFile, 
@@ -36,11 +51,19 @@ namespace IotHubCommander
             this.templateFile = templateFile;
         }
 
+        /// <summary>
+        /// Execute the command
+        /// </summary>
+        /// <returns></returns>
         public Task Execute()
         {
             return sendEvent();
         }
 
+        /// <summary>
+        /// Send Event to cloud
+        /// </summary>
+        /// <returns></returns>
         private async Task sendEvent()
         {
             StreamReader readerEventFile = null;

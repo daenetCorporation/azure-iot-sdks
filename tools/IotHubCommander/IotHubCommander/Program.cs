@@ -13,6 +13,10 @@ namespace IotHubCommander
 {
     class Program
     {
+        /// <summary>
+        /// Main Function 
+        /// </summary>
+        /// <param name="args"></param>
         static void Main(string[] args)
         {
             bool isHelp = isHelpCall(args);
@@ -46,7 +50,6 @@ namespace IotHubCommander
                                 break;
                             default:
                                 throw new Exception("Command not found. In order to see more details write \"--help\"");
-                                break;
                         }
 
                     }
@@ -67,6 +70,10 @@ namespace IotHubCommander
         }
 
 
+        /// <summary>
+        /// Send event Device to Cloud
+        /// </summary>
+        /// <param name="cmdConfig">CommandLineConfigurationProvider</param>
         private static void SendEventDevice2Cloud(CommandLineConfigurationProvider cmdConfig)
         {
             //-send =event -connStr=connection_string -cmdDelay 5 -eventFile c:\temp\eventdata.csv -templateFile c:\jsontemplate.txt
@@ -80,6 +87,11 @@ namespace IotHubCommander
         }
 
 
+        /// <summary>
+        /// Event Listener for IotHub or EventHub
+        /// </summary>
+        /// <param name="cmdConfig">CommandLineConfigurationProvider</param>
+        /// <param name="path">Path for Event Hub</param>
         private static void EventListener(CommandLineConfigurationProvider cmdConfig, string path = null)
         {
             string connStr = cmdConfig.GetArgument("connStr");
@@ -104,6 +116,12 @@ namespace IotHubCommander
 
         }
 
+
+        /// <summary>
+        /// Formating the DateTime
+        /// </summary>
+        /// <param name="startTime">Time in string </param>
+        /// <returns></returns>
         private static DateTime getTime(string startTime)
         {
 
@@ -135,7 +153,12 @@ namespace IotHubCommander
 
             return time;
         }
-        
+
+
+        /// <summary>
+        /// Event Listener Cloud to Device
+        /// </summary>
+        /// <param name="cmdConfig">CommandLineConfigurationProvider</param>
         private static void ReceiveCloud2Device(CommandLineConfigurationProvider cmdConfig)
         {
             string connStr = cmdConfig.GetArgument("connStr");
@@ -156,7 +179,11 @@ namespace IotHubCommander
         }
 
 
-
+        /// <summary>
+        /// Checks args is empty and help is required or not 
+        /// </summary>
+        /// <param name="args"> args from main function </param>
+        /// <returns></returns>
         private static bool isHelpCall(string[] args)
         {
             if (args.Length > 0)
@@ -177,6 +204,10 @@ namespace IotHubCommander
             return false;
         }
 
+
+        /// <summary>
+        /// Help text
+        /// </summary>
         private static void getHelp()
         {
             //--send=event --connStr=öoiwerjökj --cmdDelay=5 --eventFile=TextData1.csv --templateFile=JsonTemplate.txt

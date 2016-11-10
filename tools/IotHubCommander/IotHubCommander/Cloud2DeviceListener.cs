@@ -9,6 +9,9 @@ using System.Threading.Tasks;
 
 namespace IotHubCommander
 {
+    /// <summary>
+    /// Event Listener Cloud to Device
+    /// </summary>
     internal class Cloud2DeviceListener : IHubModule
     {
         ConsoleColor m_FeedbackClr = ConsoleColor.Cyan; 
@@ -18,22 +21,40 @@ namespace IotHubCommander
         private string m_ConnStr;
         private DeviceClient m_DeviceClient;
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="connStr"></param>
         public Cloud2DeviceListener(string connStr)
         {
             this.m_DeviceClient = DeviceClient.CreateFromConnectionString(connStr);
             this.m_ConnStr = connStr;
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="connStr"></param>
+        /// <param name="action"></param>
         public Cloud2DeviceListener(string connStr, CommandAction action) : this(connStr)
         {
             this.Action = action;
         }
 
+        /// <summary>
+        /// Execute the command
+        /// </summary>
+        /// <returns></returns>
         public Task Execute()
         {
            return starReceivingCommands();
         }
 
+        /// <summary>
+        /// Receive the event from cloud 
+        /// User can auto Commit, Abandon or None of them, user will be asked 'a' for Abandon and 'c' for Commit
+        /// </summary>
+        /// <returns></returns>
         private async Task starReceivingCommands()
         {
             Console.ForegroundColor = m_FeedbackClr;
@@ -116,6 +137,9 @@ namespace IotHubCommander
         }
     }
 
+    /// <summary>
+    /// Command Action for None, Commint and Abandon
+    /// </summary>
     public enum CommandAction
     {
         None = 0,

@@ -7,6 +7,9 @@ using System.Threading.Tasks;
 
 namespace IotHubCommander
 {
+    /// <summary>
+    /// Extensions for CommandLineConfigurationProvider 
+    /// </summary>
     public static class Extensions
     {
         public static string GetArgument(this CommandLineConfigurationProvider provider, string name, bool isMandatory = true)

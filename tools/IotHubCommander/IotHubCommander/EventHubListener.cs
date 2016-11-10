@@ -9,6 +9,9 @@ using System.Threading.Tasks;
 
 namespace IotHubCommander
 {
+    /// <summary>
+    /// Event listener from IotHub or EventHub
+    /// </summary>
     internal class EventHubListener : IHubModule
     {
         /// <summary>
@@ -26,6 +29,13 @@ namespace IotHubCommander
 
         private ManualResetEvent m_Event = new ManualResetEvent(false);
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="connStr">Connection string</param>
+        /// <param name="path">The Path to the Event Hub </param>
+        /// <param name="startTime"></param>
+        /// <param name="consumerGroup"></param>
         public EventHubListener(string connStr, string path = "messages/events", DateTime? startTime = null, string consumerGroup = "$Default")
         {
             this.m_Path = path;
@@ -43,6 +53,10 @@ namespace IotHubCommander
                 m_EventHubClient = EventHubClient.CreateFromConnectionString(m_ConnStr);
         }
 
+        /// <summary>
+        /// Execute the Command
+        /// </summary>
+        /// <returns></returns>
         public Task Execute()
         {
             var t = Task.Run(() =>
@@ -56,7 +70,7 @@ namespace IotHubCommander
 
                 foreach (string partition in d2cPartitions)
                 {
-                    receiveMessagesAsync(partition);
+                    receiveMessagesAsync(partition).Wait();
                     Console.WriteLine($"Connected to partition {partition}");
                 }
             });
@@ -66,6 +80,11 @@ namespace IotHubCommander
             return t;
         }
 
+        /// <summary>
+        /// Receiver from IotHub or EventHub
+        /// </summary>
+        /// <param name="partition"></param>
+        /// <returns></returns>
         private async Task receiveMessagesAsync(string partition)
         {
             try

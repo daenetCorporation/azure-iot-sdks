@@ -91,7 +91,7 @@ namespace IotHubCommander
             string templateFile = cmdConfig.GetArgument("templateFile");
             int commandDelayInSec = int.Parse(cmdDelay);
             IHubModule devEmu = new Device2CloudSender(connStr, commandDelayInSec, eventFile, templateFile);
-            devEmu.Execute();
+            devEmu.Execute().Wait();
         }
 
 

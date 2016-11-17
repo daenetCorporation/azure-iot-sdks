@@ -149,13 +149,16 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <None Include="JsonTemplate2.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
     <Content Include="Sample Commands.txt" />
     <None Include="TestData.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <Content Include="JsonTemplate.txt">
+    <None Include="JsonTemplate.txt">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
+    </None>
     <Compile Include="Device2CloudSender.cs" />
     <Compile Include="Cloud2DeviceListener.cs" />
     <Compile Include="EventHubListener.cs" />
@@ -163,7 +166,12 @@
     <Compile Include="IHubModule.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <None Include="TextData1.csv" />
+    <None Include="TextData2.csv">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="TextData1.csv">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config">

@@ -159,9 +159,11 @@
     <None Include="JsonTemplate.txt">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
+    <Compile Include="FeedbackReceiver.cs" />
+    <Compile Include="Cloud2DeviceSender.cs" />
     <Compile Include="Device2CloudSender.cs" />
     <Compile Include="Cloud2DeviceListener.cs" />
-    <Compile Include="EventHubListener.cs" />
+    <Compile Include="TelemetryListener.cs" />
     <Compile Include="Extensions.cs" />
     <Compile Include="IHubModule.cs" />
     <Compile Include="Program.cs" />

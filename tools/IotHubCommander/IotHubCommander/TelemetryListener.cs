@@ -12,7 +12,7 @@ namespace IotHubCommander
     /// <summary>
     /// Event listener from IotHub or EventHub
     /// </summary>
-    internal class EventHubListener : IHubModule
+    internal class TelemetryListener : IHubModule
     {
         /// <summary>
         /// Goto IotHub portal and copy Shared Access Policy with name 'service'.
@@ -36,7 +36,7 @@ namespace IotHubCommander
         /// <param name="path">The Path to the Event Hub </param>
         /// <param name="startTime"></param>
         /// <param name="consumerGroup"></param>
-        public EventHubListener(string connStr, string path = "messages/events", DateTime? startTime = null, string consumerGroup = "$Default")
+        public TelemetryListener(string connStr, string path = "messages/events", DateTime? startTime = null, string consumerGroup = "$Default")
         {
             this.m_Path = path;
             this.m_ConsumerGroup = consumerGroup;
@@ -63,19 +63,18 @@ namespace IotHubCommander
             {
                 Console.ForegroundColor = ConsoleColor.Yellow;
 
-                Console.WriteLine("Receive messages\n");
-            
+                Console.WriteLine("Receive messages\n");            
 
                 var d2cPartitions = m_EventHubClient.GetRuntimeInformation().PartitionIds;
 
                 foreach (string partition in d2cPartitions)
                 {
-                    receiveMessagesAsync(partition).Wait();
+                    receiveMessagesAsync(partition);
                     Console.WriteLine($"Connected to partition {partition}");
                 }
             });
 
-            m_Event.WaitOne();
+            //m_Event.WaitOne();
 
             return t;
         }

@@ -55,9 +55,9 @@ namespace IotHubCommander
         /// Execute the command
         /// </summary>
         /// <returns></returns>
-        public Task Execute()
+        public async Task Execute()
         {
-            return sendEvent();
+            await sendEvent();
         }
 
         /// <summary>
@@ -80,7 +80,8 @@ namespace IotHubCommander
                     var tokens = readerEventFile.ReadLine().Split(';');
                     foreach (var token in tokens)
                     {
-                        template = template.Replace(@"@{cnt}", token);
+                        string tkn = $"@{cnt}";
+                        template = template.Replace(tkn, token);
                         cnt++;
                     }
                                       

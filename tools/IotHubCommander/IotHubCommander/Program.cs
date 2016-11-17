@@ -100,14 +100,14 @@ namespace IotHubCommander
             DateTime time = getTime(startTime);
             if (consumerGroup != null)
             {
-                IHubModule module = new EventHubListener(connStr, path, time, consumerGroup);
+                IHubModule module = new TelemetryListener(connStr, path, time, consumerGroup);
                 var t = module.Execute();
 
                 t.Wait(Timeout.Infinite);
             }
             else
             {
-                IHubModule module = new EventHubListener(connStr, path, time);
+                IHubModule module = new TelemetryListener(connStr, path, time);
                 var t = module.Execute();
 
                 t.Wait(Timeout.Infinite);

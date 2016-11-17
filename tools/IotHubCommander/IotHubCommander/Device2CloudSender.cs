@@ -62,9 +62,9 @@ namespace IotHubCommander
         /// Execute the command
         /// </summary>
         /// <returns></returns>
-        public Task Execute()
+        public async Task Execute()
         {
-            return sendEvent();
+            await sendEvent();
         }
 
         /// <summary>
@@ -83,10 +83,15 @@ namespace IotHubCommander
                     readerTempFile = new StreamReader(File.OpenRead(templateFile));
                     var template = readerTempFile.ReadToEnd();
 
-                    var value = readerEventFile.ReadLine().Split(';');
-                    template = template.Replace("@1", value[0]);
-                    template = template.Replace("@2", value[1]);
-                    template = template.Replace("@3", value[2]);
+                    int cnt = 1;
+                    var tokens = readerEventFile.ReadLine().Split(';');
+                    foreach (var token in tokens)
+                    {
+                        string tkn = $"@{cnt}";
+                        template = template.Replace(tkn, token);
+                        cnt++;
+                    }
+                                      
                     var json = JsonConvert.SerializeObject(template);
                     var message = new Message(Encoding.UTF8.GetBytes(json));
                     message.MessageId = Guid.NewGuid().ToString();

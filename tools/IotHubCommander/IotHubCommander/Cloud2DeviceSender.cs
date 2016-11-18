@@ -52,7 +52,7 @@ namespace IotHubCommander
         /// <returns></returns>
         private async Task sendEvent()
         {
-            int count = 1;
+            int count = 2;
             StreamReader readerEventFile = null;
             StreamReader readerTempFile = null;
             try
@@ -81,11 +81,11 @@ namespace IotHubCommander
                     //Different color
                     if (count % 2 == 0)
                     {
-                        Helper.WriteLine($"Event sending ...{Environment.NewLine}{template}{Environment.NewLine} Event has been sent.", ConsoleColor.Gray);
+                        Helper.WriteLine($"Event sending ...{Environment.NewLine}{template}{Environment.NewLine} Event has been sent.", ConsoleColor.White);
                     }
                     else
                     {
-                        Helper.WriteLine($"Event sending ...{Environment.NewLine}{template}{Environment.NewLine} Event has been sent.", ConsoleColor.White);
+                        Helper.WriteLine($"Event sending ...{Environment.NewLine}{template}{Environment.NewLine} Event has been sent.", ConsoleColor.DarkGreen);
                     }
                     count++;
                     

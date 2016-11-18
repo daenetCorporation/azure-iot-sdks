@@ -38,6 +38,7 @@ namespace IotHubCommander
             helpText.AppendLine();
             helpText.AppendLine($"   --send=<\"Cloud\" for sending event>");
             helpText.AppendLine($"   --connStr=<Connection string for sending event>");
+            helpText.AppendLine($"   --deviceId=<Connection string for sending event>");
             helpText.AppendLine($"   --eventFile=<csv formated file with \";\" separated value>");
             helpText.AppendLine($"   --tempFile=<txt formated file, format of event>");
             helpText.AppendLine();
@@ -164,6 +165,7 @@ namespace IotHubCommander
             if (isNewLine)
             {
                 Console.WriteLine(message);
+                Console.WriteLine();
             }
             else
             {

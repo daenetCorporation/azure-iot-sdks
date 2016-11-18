@@ -76,7 +76,7 @@ namespace IotHubCommander
         /// <returns></returns>
         private async Task sendEvent()
         {
-            int count = 1;
+            int count = 2;
             StreamReader readerEventFile = null;
             StreamReader readerTempFile = null;
             try
@@ -110,7 +110,7 @@ namespace IotHubCommander
                     {
                         Helper.WriteLine($"Event sending ... {Environment.NewLine}{template}{Environment.NewLine} Event has been sent.",ConsoleColor.DarkYellow);
                     }
-                    
+                    count++;
                    // Thread.Sleep(3000);
                 }
             }

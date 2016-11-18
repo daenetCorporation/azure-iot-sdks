@@ -56,7 +56,7 @@ namespace IotHubCommander
                 {
                     case CommandAction.Abandon:
                         await feedbackReceiver.AbandonAsync(feedbackBatch);
-                        Helper.WriteLine($"Command abandoned successfully:)!",ConsoleColor.Yellow);
+                        Helper.WriteLine($"Command abandoned successfully:)!", ConsoleColor.Yellow);
                         break;
                     case CommandAction.Complete:
                         await feedbackReceiver.CompleteAsync(feedbackBatch);
@@ -69,20 +69,20 @@ namespace IotHubCommander
                         if (whatTodo == "a")
                         {
                             await feedbackReceiver.AbandonAsync(feedbackBatch);
-                            Helper.WriteLine("Command abandoned successfully :)!",ConsoleColor.Yellow);
+                            Helper.WriteLine("Command abandoned successfully :)!", ConsoleColor.Yellow);
                         }
                         else if (whatTodo == "c")
                         {
                             await feedbackReceiver.CompleteAsync(feedbackBatch);
-                            Helper.WriteLine("Command completed successfully :)!",ConsoleColor.Yellow);
+                            Helper.WriteLine("Command completed successfully :)!", ConsoleColor.Yellow);
                         }
                         else
                         {
-                            Helper.WriteLine("Receiving of commands has been stopped!",ConsoleColor.White);
+                            Helper.WriteLine("Receiving of commands has been stopped!", ConsoleColor.White);
                         }
 
-                        break;   
-                }   
+                        break;
+                }
             }
         }
 

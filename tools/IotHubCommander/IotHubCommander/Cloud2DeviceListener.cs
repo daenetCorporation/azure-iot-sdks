@@ -76,9 +76,10 @@ namespace IotHubCommander
         /// <returns></returns>
         private async Task starReceivingCommands()
         {
-            Console.ForegroundColor = m_FeedbackClr;
-            Console.WriteLine("\nStarted Receiving cloud to device messages from service");
-            Console.ResetColor();
+            int count = 2;
+            //Console.ForegroundColor = m_FeedbackClr;
+            Helper.WriteLine("\nStarted Receiving cloud to device messages from service",ConsoleColor.White);
+            //Console.ResetColor();
 
             while (true)
             {
@@ -91,10 +92,15 @@ namespace IotHubCommander
                     continue;
                 }
 
-                Console.ForegroundColor = m_MsgRvcClr;
-                Console.WriteLine($"Received message: {receivedMessage.MessageId} - {Encoding.UTF8.GetString(receivedMessage.GetBytes())}");
-               
-                
+                if (count % 2 == 0)
+                {
+                    Helper.WriteLine($"Message Receiving ...{Environment.NewLine}Message ID: {receivedMessage.MessageId}{Environment.NewLine}Message: {Encoding.UTF8.GetString(receivedMessage.GetBytes())}", ConsoleColor.DarkMagenta);
+                }
+                else
+                {
+                    Helper.WriteLine($"Message Receiving ...{Environment.NewLine}Message ID: {receivedMessage.MessageId}{Environment.NewLine}Message: {Encoding.UTF8.GetString(receivedMessage.GetBytes())}", ConsoleColor.Green);
+                }
+                count++;
 
                 try
                 {

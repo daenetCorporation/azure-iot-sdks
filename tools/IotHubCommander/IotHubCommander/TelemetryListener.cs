@@ -82,7 +82,7 @@ namespace IotHubCommander
 
                 foreach (string partition in d2cPartitions)
                 {
-                    receiveMessagesAsync(partition).Wait();
+                    receiveMessagesAsync(partition);
                     Console.WriteLine($"Connected to partition {partition}");
                 }
             });
@@ -130,7 +130,7 @@ namespace IotHubCommander
                     }
                     else
                     {
-                        Helper.WriteLine(stBuider.ToString(), ConsoleColor.DarkBlue);
+                        Helper.WriteLine(stBuider.ToString(), ConsoleColor.White);
                     }
                     count++;
                     // readProperties(data);

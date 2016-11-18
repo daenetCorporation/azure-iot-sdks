@@ -28,7 +28,9 @@ namespace IotHubCommander
         /// <param name="args"></param>
         static void Main(string[] args)
         {
+            Console.WriteLine();
             Helper.WriteLine($"Welcome to IotHub Commander tool.Version 1.0{Environment.NewLine}Copyright © daenet GmbH Frankfurt am Main", ConsoleColor.Cyan);
+           
 
             bool isHelp = Helper.isHelpCall(args);
             //
@@ -175,7 +177,7 @@ namespace IotHubCommander
                 IHubModule module = new TelemetryListener(connStr, path, time);
                 var t = module.Execute();
 
-                t.Wait(Timeout.Infinite);
+                t.Wait();
             }
         }
     }

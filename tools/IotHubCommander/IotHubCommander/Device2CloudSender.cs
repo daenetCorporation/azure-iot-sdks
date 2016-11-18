@@ -26,11 +26,14 @@ namespace IotHubCommander
     /// </summary>
     internal class Device2CloudSender : IHubModule
     {
-        private int commandDelayInSec;
-        private string connStr;
-        private string evetFile;
-        private string templateFile;
+        #region Member Variables
 
+        private int m_CommandDelayInSec;
+        private string m_ConnStr;
+        private string m_EvetFile;
+        private string m_TemplateFile;
+
+        #endregion
         /// <summary>
         /// Send event device to cloud
         /// </summary>
@@ -38,8 +41,8 @@ namespace IotHubCommander
         /// <param name="commandDelayInSec">Command delay time</param>
         public Device2CloudSender(string connStr, int commandDelayInSec)
         {
-            this.connStr = connStr;
-            this.commandDelayInSec = commandDelayInSec;
+            this.m_ConnStr = connStr;
+            this.m_CommandDelayInSec = commandDelayInSec;
         }
 
         /// <summary>
@@ -54,8 +57,8 @@ namespace IotHubCommander
             string evetFile, 
             string templateFile) : this(connStr, commandDelayInSec)
         {
-            this.evetFile = evetFile;
-            this.templateFile = templateFile;
+            this.m_EvetFile = evetFile;
+            this.m_TemplateFile = templateFile;
         }
 
         /// <summary>
@@ -73,14 +76,15 @@ namespace IotHubCommander
         /// <returns></returns>
         private async Task sendEvent()
         {
+            int count = 1;
             StreamReader readerEventFile = null;
             StreamReader readerTempFile = null;
             try
             {
-                readerEventFile = new StreamReader(File.OpenRead(evetFile));
+                readerEventFile = new StreamReader(File.OpenRead(m_EvetFile));
                 while (!readerEventFile.EndOfStream)
                 {
-                    readerTempFile = new StreamReader(File.OpenRead(templateFile));
+                    readerTempFile = new StreamReader(File.OpenRead(m_TemplateFile));
                     var template = readerTempFile.ReadToEnd();
 
                     int cnt = 1;
@@ -95,11 +99,18 @@ namespace IotHubCommander
                     var json = JsonConvert.SerializeObject(template);
                     var message = new Message(Encoding.UTF8.GetBytes(json));
                     message.MessageId = Guid.NewGuid().ToString();
-                    DeviceClient deviceClient = DeviceClient.CreateFromConnectionString(connStr);
+                    DeviceClient deviceClient = DeviceClient.CreateFromConnectionString(m_ConnStr);
 
                     await deviceClient.SendEventAsync(message);
-
-                    Console.WriteLine($"{template}{Environment.NewLine} Event has been sent.");
+                    if(count%2 == 0)
+                    {
+                       Helper.WriteLine($"Event sending ... {Environment.NewLine}{template}{Environment.NewLine} Event has been sent.",ConsoleColor.Green);
+                    }
+                    else
+                    {
+                        Helper.WriteLine($"Event sending ... {Environment.NewLine}{template}{Environment.NewLine} Event has been sent.",ConsoleColor.DarkYellow);
+                    }
+                    
                    // Thread.Sleep(3000);
                 }
             }

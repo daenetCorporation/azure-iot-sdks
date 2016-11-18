@@ -28,10 +28,14 @@ namespace IotHubCommander
         /// <param name="args"></param>
         static void Main(string[] args)
         {
-            bool isHelp = isHelpCall(args);
+            Helper.WriteLine($"Welcome to IotHub Commander tool.Version 1.0{Environment.NewLine}Copyright © daenet GmbH Frankfurt am Main", ConsoleColor.Cyan);
+
+            bool isHelp = Helper.isHelpCall(args);
+            //
+            //Check wether help is needed or not
             if (isHelp)
             {
-                getHelp();
+                Helper.getHelp();
             }
             else
             {
@@ -42,6 +46,7 @@ namespace IotHubCommander
                     string connetTo;
                     if (cmdConfig.TryGet("connectTo", out connetTo) || cmdConfig.TryGet("send", out connetTo) || cmdConfig.TryGet("listen", out connetTo))
                     {
+                        // Initialize the proper module, depending on the retrreived argument.
                         switch (connetTo.ToLower())
                         {
                             case "eventhub":
@@ -52,10 +57,16 @@ namespace IotHubCommander
                                 EventListener(cmdConfig, "messages/events");
                                 break;
                             case "event":
-                                SendEventDevice2Cloud(cmdConfig);
+                                D2CSend(cmdConfig);
                                 break;
                             case "device":
-                                ReceiveCloud2Device(cmdConfig);
+                                C2DListen(cmdConfig);
+                                break;
+                            case "cloud":
+                                C2DSend(cmdConfig);
+                                break;
+                            case "feedback":
+                                GetFeedback(cmdConfig);
                                 break;
                             default:
                                 throw new Exception("Command not found. In order to see more details write \"--help\"");
@@ -69,31 +80,77 @@ namespace IotHubCommander
                 }
                 catch (Exception ex)
                 {
-                    Console.ForegroundColor = ConsoleColor.Red;
-                    Console.WriteLine(ex);
-                    Console.ResetColor();
+                    // Print Exeption 
+                    Helper.WriteLine(ex.ToString(), ConsoleColor.Magenta);
                 }
             }
             Console.ReadKey();
         }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="cmdConfig"></param>
+        private static void GetFeedback(CommandLineConfigurationProvider cmdConfig)
+        {
+            //--listen=Feedback --connStr="" action=""
+            string connStr = cmdConfig.GetArgument("connStr");
+            string action = cmdConfig.GetArgument("action", false);
+            CommandAction commandAction = (CommandAction)Enum.Parse(typeof(CommandAction), action);
+            IHubModule feedbackReceiver = new FeedbackReceiver(connStr: connStr, action: commandAction);
+            feedbackReceiver.Execute().Wait();
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="cmdConfig"></param>
+        private static void C2DSend(CommandLineConfigurationProvider cmdConfig)
+        {
+            //--send=cloud --connstr="" enentfile="" --tempFile=""
+            string connStr = cmdConfig.GetArgument("connStr");
+            string eventFile = cmdConfig.GetArgument("eventFile");
+            string templateFile = cmdConfig.GetArgument("tempFile");
+            string deviceId = cmdConfig.GetArgument("deviceId");
+
+            IHubModule devEmu = new Cloud2DeviceSender(connStr, deviceId, eventFile, templateFile);
+            devEmu.Execute().Wait();
+        }
+
 
 
         /// <summary>
         /// Send event Device to Cloud
         /// </summary>
         /// <param name="cmdConfig">CommandLineConfigurationProvider</param>
-        private static void SendEventDevice2Cloud(CommandLineConfigurationProvider cmdConfig)
+        private static void D2CSend(CommandLineConfigurationProvider cmdConfig)
         {
-            //-send =event -connStr=connection_string -cmdDelay 5 -eventFile c:\temp\eventdata.csv -templateFile c:\jsontemplate.txt
+            //-send =event -connStr=connection_string -cmdDelay 5 -eventFile c:\temp\eventdata.csv -tempFile c:\jsontemplate.txt
             string connStr = cmdConfig.GetArgument("connStr");
             string cmdDelay = cmdConfig.GetArgument("cmdDelay");
             string eventFile = cmdConfig.GetArgument("eventFile");
-            string templateFile = cmdConfig.GetArgument("templateFile");
+            string templateFile = cmdConfig.GetArgument("tempFile");
             int commandDelayInSec = int.Parse(cmdDelay);
             IHubModule devEmu = new Device2CloudSender(connStr, commandDelayInSec, eventFile, templateFile);
             devEmu.Execute().Wait();
         }
 
+
+        /// <summary>
+        /// Event Listener Cloud to Device
+        /// </summary>
+        /// <param name="cmdConfig">CommandLineConfigurationProvider</param>
+        private static void C2DListen(CommandLineConfigurationProvider cmdConfig)
+        {
+            string connStr = cmdConfig.GetArgument("connStr");
+            string action = cmdConfig.GetArgument("action", false);
+            CommandAction commandAction;
+            bool isPressed = Enum.TryParse<CommandAction>(action, true, out commandAction);
+
+            IHubModule devListener = new Cloud2DeviceListener(connStr, commandAction);
+            devListener.Execute().Wait();
+
+        }
 
         /// <summary>
         /// Event Listener for IotHub or EventHub
@@ -105,7 +162,7 @@ namespace IotHubCommander
             string connStr = cmdConfig.GetArgument("connStr");
             string startTime = cmdConfig.GetArgument("startTime");
             string consumerGroup = cmdConfig.GetArgument("consumerGroup", false);
-            DateTime time = getTime(startTime);
+            DateTime time = Helper.getTime(startTime);
             if (consumerGroup != null)
             {
                 IHubModule module = new TelemetryListener(connStr, path, time, consumerGroup);
@@ -120,158 +177,7 @@ namespace IotHubCommander
 
                 t.Wait(Timeout.Infinite);
             }
-
-
         }
-
-
-        /// <summary>
-        /// Formating the DateTime
-        /// </summary>
-        /// <param name="startTime">Time in string </param>
-        /// <returns></returns>
-        private static DateTime getTime(string startTime)
-        {
-
-            DateTime time;
-            if (startTime.ToLower().Contains('h'))
-            {
-                int hours = int.Parse(startTime.Substring(0, 2));
-                time = DateTime.UtcNow.AddHours(hours);
-
-            }
-            else if(startTime.ToLower().Contains('s'))
-            {
-                int second = int.Parse(startTime.Substring(0, 2));
-                time = DateTime.UtcNow.AddSeconds(second);
-            }
-            else if (startTime.ToLower().Contains('d'))
-            {
-                int day = int.Parse(startTime.Substring(0, 2));
-                time = DateTime.UtcNow.AddDays(day);
-            }
-            else if (startTime.ToLower().Contains("now"))
-            {
-                time = DateTime.Now;
-            }
-            else
-            {
-                throw new Exception("Wrong time format.");
-            }
-
-            return time;
-        }
-
-
-        /// <summary>
-        /// Event Listener Cloud to Device
-        /// </summary>
-        /// <param name="cmdConfig">CommandLineConfigurationProvider</param>
-        private static void ReceiveCloud2Device(CommandLineConfigurationProvider cmdConfig)
-        {
-            string connStr = cmdConfig.GetArgument("connStr");
-            string action = cmdConfig.GetArgument("action",false);
-            CommandAction commandAction;
-            if(Enum.TryParse<CommandAction>(action,true, out commandAction))
-            {
-                IHubModule devListener = new Cloud2DeviceListener(connStr, commandAction);
-                var t = devListener.Execute();
-            }
-            else
-            {
-                commandAction = CommandAction.None;
-                IHubModule devListener = new Cloud2DeviceListener(connStr, commandAction);
-                var t = devListener.Execute();
-            }
-            
-        }
-
-
-        /// <summary>
-        /// Checks args is empty and help is required or not 
-        /// </summary>
-        /// <param name="args"> args from main function </param>
-        /// <returns></returns>
-        private static bool isHelpCall(string[] args)
-        {
-            if (args.Length > 0)
-            {
-                for (int i = 0; i < args.Length; i++)
-                {
-                    if (args[i].StartsWith("help", StringComparison.OrdinalIgnoreCase) || args[i].StartsWith("--help", StringComparison.OrdinalIgnoreCase) || args[i].StartsWith("-help", StringComparison.OrdinalIgnoreCase) || args[i].StartsWith("/help", StringComparison.OrdinalIgnoreCase))
-                    {
-                        args[i] = "--help=true";
-                        return true;
-                    }
-                }
-            }
-            else
-            {
-                return true;
-            }
-            return false;
-        }
-
-
-        /// <summary>
-        /// Help text
-        /// </summary>
-        private static void getHelp()
-        {
-            //--send=event --connStr=öoiwerjökj --cmdDelay=5 --eventFile=TextData1.csv --templateFile=JsonTemplate.txt
-            StringBuilder helpText = new StringBuilder();
-            helpText.AppendLine();
-            helpText.AppendLine($"- Send Event Device to Cloud-");
-            helpText.AppendLine($"-----------------------------");
-            helpText.AppendLine($"-----------------------------");
-            helpText.AppendLine();
-            helpText.AppendLine($"   --send=<\"Event\" for sending event>");
-            helpText.AppendLine($"   --connStr=<Connection string for sending event>");
-            helpText.AppendLine($"   --cmdDelay=<Delay time to listen>");
-            helpText.AppendLine($"   --eventFile=<csv formated file with \";\" separated value>");
-            helpText.AppendLine($"   --templateFile=<txt formated file, format of event>");
-            helpText.AppendLine();
-            helpText.AppendLine($"- EXAMPLES -");
-            helpText.AppendLine($"--send=event --connStr=HostName=something.azure-devices.net;DeviceId=123456;SharedAccessKey=2CFsCmqyHvH/5HmRTkD8bR/YbEIU9IM= --cmdDelay=5 --eventFile=TextData1.csv --templateFile=JsonTemplate.txt");
-            //--listen=Device --connStr=connection_string --autoCommit=true/false
-            helpText.AppendLine();
-            helpText.AppendLine($"- Cloud to Device Listener -");
-            helpText.AppendLine($"----------------------------");
-            helpText.AppendLine($"----------------------------");
-            helpText.AppendLine();
-            helpText.AppendLine($"   --listen=<\"Device\" for listening event>");
-            helpText.AppendLine($"   --connStr=<Connection string for reading event>");
-            helpText.AppendLine($"   --action=<\"Abandon, Commit or None\" for abandon, Commit the message. None is default command and will ask you for abandon or commit.>");
-            helpText.AppendLine();
-            helpText.AppendLine($"- EXAMPLES -");
-            helpText.AppendLine($"--listen=Device --connStr=HostName=something.azure-devices.net;DeviceId=123456;SharedAccessKey=2CFsCmqyHvHHmRTkD8bR/YbEIU9IM= --action=Abandon");
-            helpText.AppendLine($"--listen=Device --connStr=HostName=something.azure-devices.net;DeviceId=123456;SharedAccessKey=2CFsCmqyHvHHmRTkD8bR/YbEIU9IM= --action=Commit");
-            //-connectTo=EventHub -connStr=oadölfj -startTime=-3h -consumerGroup=$Default
-            helpText.AppendLine();
-            helpText.AppendLine($"- Read events form IoTHub or EventHub. -");
-            helpText.AppendLine($"----------------------------------------");
-            helpText.AppendLine($"----------------------------------------");
-            helpText.AppendLine();
-            helpText.AppendLine($"   --connectTo=<\"EventHub or IotHub\" for connect with>");
-            helpText.AppendLine($"   --connStr=<Connection string for reading event>");
-            helpText.AppendLine($"   --startTime=<Starting for reading for event that could be hour, day and now, otherwise it will throw an error \"Wrong time format\">");
-            helpText.AppendLine($"   --consumerGroup=<Your consumer group name. It is not mandatory, it will take \"$Default\" consumer group name>");
-            helpText.AppendLine();
-            helpText.AppendLine($"- EXAMPLES -");
-            helpText.AppendLine($"--connectTo=EventHub --connStr=Endpoint=sb://sonethig-myevent-test.servicebus.windows.net/;SharedAccessKeyName=ReaderPolicy;SharedAccessKey=8AKA52124IVqj5eabciWz99UJWpDpQLQzwyLoWVKOTg=;EntityPath=abc -startTime=-3h -consumerGroup=abc");
-            helpText.AppendLine($"--connectTo=EventHub --connStr=Endpoint=sb://sonethig-myevent-test.servicebus.windows.net/;SharedAccessKeyName=ReaderPolicy;SharedAccessKey=8AKA52124IVqj5eabciWz99UJWpDpQLQzwyLoWVKOTg=;EntityPath=abc -startTime=-3d -consumerGroup=abc");
-            helpText.AppendLine($"--connectTo=EventHub --connStr=Endpoint=sb://sonethig-myevent-test.servicebus.windows.net/;SharedAccessKeyName=ReaderPolicy;SharedAccessKey=8AKA52124IVqj5eabciWz99UJWpDpQLQzwyLoWVKOTg=;EntityPath=abc -startTime=-3s -consumerGroup=abc");
-            helpText.AppendLine($"--connectTo=EventHub --connStr=Endpoint=sb://sonethig-myevent-test.servicebus.windows.net/;SharedAccessKeyName=ReaderPolicy;SharedAccessKey=8AKA52124IVqj5eabciWz99UJWpDpQLQzwyLoWVKOTg=;EntityPath=abc -startTime=now -consumerGroup=abc");
-            Console.ForegroundColor = ConsoleColor.White;
-            Console.WriteLine(helpText.ToString());
-            Console.ResetColor();
-
-        }
-
     }
 }
-        
-       
-
-
 

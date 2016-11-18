@@ -25,20 +25,21 @@ namespace IotHubCommander
     /// </summary>
     internal class TelemetryListener : IHubModule
     {
+        #region Member Variables
         /// <summary>
         /// Goto IotHub portal and copy Shared Access Policy with name 'service'.
         /// </summary>
         private string m_ConnStr = "";
-
+        private string m_ConsumerGroup;
         private string m_Path = "messages/events";
 
         private EventHubClient m_EventHubClient;
-
-        private string m_ConsumerGroup;
-
         private DateTime m_StartTime;
-
         private ManualResetEvent m_Event = new ManualResetEvent(false);
+
+        #endregion
+
+        #region Public Methods 
 
         /// <summary>
         /// Listener for event hub
@@ -81,7 +82,7 @@ namespace IotHubCommander
 
                 foreach (string partition in d2cPartitions)
                 {
-                    receiveMessagesAsync(partition);
+                    receiveMessagesAsync(partition).Wait();
                     Console.WriteLine($"Connected to partition {partition}");
                 }
             });
@@ -90,6 +91,9 @@ namespace IotHubCommander
 
             return t;
         }
+        #endregion
+
+        #region Private Methods
 
         /// <summary>
         /// Receiver from IotHub or EventHub
@@ -112,27 +116,21 @@ namespace IotHubCommander
                     }
 
                     string data = Encoding.UTF8.GetString(eventData.GetBytes());
+
+                    StringBuilder stBuider = new StringBuilder();
+                    stBuider.Append($"x-opt-sequence-number : {eventData.SystemProperties["x-opt-sequence-number"]}");
+                    stBuider.Append($"x-opt-offset: {eventData.SystemProperties["x-opt-offset"]}");
+                    stBuider.Append($"x-opt-enqueued-time: {eventData.SystemProperties["x-opt-enqueued-time"]}");
+                    stBuider.Append($"Message received. Partition: {partition} Data: '{data}'");
                     //
                     // Different color
                     if (count % 2 == 0)
                     {
-                        Console.ForegroundColor = ConsoleColor.Cyan;
-                        Console.WriteLine($"x-opt-sequence-number : {eventData.SystemProperties["x-opt-sequence-number"]}");
-                        Console.WriteLine($"x-opt-offset: {eventData.SystemProperties["x-opt-offset"]}");
-                        Console.WriteLine($"x-opt-enqueued-time: {eventData.SystemProperties["x-opt-enqueued-time"]}");
-                        Console.WriteLine(string.Format("Message received. Partition: {0} Data: '{1}'", partition, data));
-                        Console.WriteLine();
-                        Console.ResetColor();
+                        Helper.WriteLine(stBuider.ToString(), ConsoleColor.Blue);
                     }
                     else
                     {
-                        Console.ForegroundColor = ConsoleColor.Green;
-                        Console.WriteLine($"x-opt-sequence-number : {eventData.SystemProperties["x-opt-sequence-number"]}");
-                        Console.WriteLine($"x-opt-offset: {eventData.SystemProperties["x-opt-offset"]}");
-                        Console.WriteLine($"x-opt-enqueued-time: {eventData.SystemProperties["x-opt-enqueued-time"]}");
-                        Console.WriteLine(string.Format("Message received. Partition: {0} Data: '{1}'", partition, data));
-                        Console.WriteLine();
-                        Console.ResetColor();
+                        Helper.WriteLine(stBuider.ToString(), ConsoleColor.DarkBlue);
                     }
                     count++;
                     // readProperties(data);
@@ -158,5 +156,6 @@ namespace IotHubCommander
         //        Console.WriteLine(data);
         //    }
         //}
+        #endregion
     }
 }

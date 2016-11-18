@@ -1,7 +1,14 @@
-﻿// Copyright (c) Microsoft. All rights reserved.
-// Licensed under the MIT license. See LICENSE file in the project root for full license information.
-
-//using Microsoft.Azure.Devices;
+﻿//=======================================================================================
+// Copyright © daenet GmbH Frankfurt am Main
+//
+// LICENSED UNDER THE APACHE LICENSE, VERSION 2.0 (THE "LICENSE"); YOU MAY NOT USE THESE
+// FILES EXCEPT IN COMPLIANCE WITH THE LICENSE. YOU MAY OBTAIN A COPY OF THE LICENSE AT
+// http://www.apache.org/licenses/LICENSE-2.0
+// UNLESS REQUIRED BY APPLICABLE LAW OR AGREED TO IN WRITING, SOFTWARE DISTRIBUTED UNDER THE
+// LICENSE IS DISTRIBUTED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+// KIND, EITHER EXPRESS OR IMPLIED. SEE THE LICENSE FOR THE SPECIFIC LANGUAGE GOVERNING
+// PERMISSIONS AND LIMITATIONS UNDER THE LICENSE.
+//=======================================================================================
 using Microsoft.Azure.Devices.Client;
 using Newtonsoft.Json;
 using System;
@@ -25,7 +32,7 @@ namespace IotHubCommander
         private string templateFile;
 
         /// <summary>
-        /// 
+        /// Send event device to cloud
         /// </summary>
         /// <param name="connStr"> Device Connection string</param>
         /// <param name="commandDelayInSec">Command delay time</param>
@@ -36,7 +43,7 @@ namespace IotHubCommander
         }
 
         /// <summary>
-        /// 
+        /// Send event device to cloud
         /// </summary>
         /// <param name="connStr">Connection string for device</param>
         /// <param name="commandDelayInSec">Command delay time</param>

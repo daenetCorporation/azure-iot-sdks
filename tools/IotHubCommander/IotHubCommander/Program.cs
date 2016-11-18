@@ -1,5 +1,14 @@
-﻿// Copyright (c) Microsoft. All rights reserved.
-// Licensed under the MIT license. See LICENSE file in the project root for full license information.using System;
+﻿//=======================================================================================
+// Copyright © daenet GmbH Frankfurt am Main
+//
+// LICENSED UNDER THE APACHE LICENSE, VERSION 2.0 (THE "LICENSE"); YOU MAY NOT USE THESE
+// FILES EXCEPT IN COMPLIANCE WITH THE LICENSE. YOU MAY OBTAIN A COPY OF THE LICENSE AT
+// http://www.apache.org/licenses/LICENSE-2.0
+// UNLESS REQUIRED BY APPLICABLE LAW OR AGREED TO IN WRITING, SOFTWARE DISTRIBUTED UNDER THE
+// LICENSE IS DISTRIBUTED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+// KIND, EITHER EXPRESS OR IMPLIED. SEE THE LICENSE FOR THE SPECIFIC LANGUAGE GOVERNING
+// PERMISSIONS AND LIMITATIONS UNDER THE LICENSE.
+//=======================================================================================
 using Microsoft.Framework.Configuration.CommandLine;
 using Microsoft.ServiceBus.Messaging;
 using System;
@@ -65,7 +74,6 @@ namespace IotHubCommander
                     Console.ResetColor();
                 }
             }
-            Console.WriteLine("Main Function");
             Console.ReadKey();
         }
 
@@ -83,7 +91,7 @@ namespace IotHubCommander
             string templateFile = cmdConfig.GetArgument("templateFile");
             int commandDelayInSec = int.Parse(cmdDelay);
             IHubModule devEmu = new Device2CloudSender(connStr, commandDelayInSec, eventFile, templateFile);
-            devEmu.Execute();
+            devEmu.Execute().Wait();
         }
 
 
@@ -213,9 +221,9 @@ namespace IotHubCommander
             //--send=event --connStr=öoiwerjökj --cmdDelay=5 --eventFile=TextData1.csv --templateFile=JsonTemplate.txt
             StringBuilder helpText = new StringBuilder();
             helpText.AppendLine();
-            helpText.AppendLine($"- Send Event -");
-            helpText.AppendLine($"--------------");
-            helpText.AppendLine($"--------------");
+            helpText.AppendLine($"- Send Event Device to Cloud-");
+            helpText.AppendLine($"-----------------------------");
+            helpText.AppendLine($"-----------------------------");
             helpText.AppendLine();
             helpText.AppendLine($"   --send=<\"Event\" for sending event>");
             helpText.AppendLine($"   --connStr=<Connection string for sending event>");
@@ -228,8 +236,8 @@ namespace IotHubCommander
             //--listen=Device --connStr=connection_string --autoCommit=true/false
             helpText.AppendLine();
             helpText.AppendLine($"- Cloud to Device Listener -");
-            helpText.AppendLine($"----------------");
-            helpText.AppendLine($"----------------");
+            helpText.AppendLine($"----------------------------");
+            helpText.AppendLine($"----------------------------");
             helpText.AppendLine();
             helpText.AppendLine($"   --listen=<\"Device\" for listening event>");
             helpText.AppendLine($"   --connStr=<Connection string for reading event>");

@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace IotHubCommander
 {
-    public class Cloud2DeviceSender : IHubModule
+    public class Cloud2DeviceSender1 : IHubModule
     {
         public Task Execute()
         {

@@ -25,7 +25,7 @@ namespace IotHubCommander
         }
 
         /// <summary>
-        /// 
+        /// Execute
         /// </summary>
         /// <returns></returns>
         public async Task Execute()
@@ -38,14 +38,14 @@ namespace IotHubCommander
         #region Peivate Methods 
 
         /// <summary>
-        /// 
+        /// Receive feedback 
         /// </summary>
         /// <returns></returns>
         private async Task receiveFeedbackAsync()
         {
             var feedbackReceiver = m_ServiceClient.GetFeedbackReceiver();
 
-            Helper.WriteLine("\nReceiving c2d feedback from service",ConsoleColor.White);
+            Helper.WriteLine("\nReceiving Cloud to Device feedback from service",ConsoleColor.White);
             while (true)
             {
                 var feedbackBatch = await feedbackReceiver.ReceiveAsync();

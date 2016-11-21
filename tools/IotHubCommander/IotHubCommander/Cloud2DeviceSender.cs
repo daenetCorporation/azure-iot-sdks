@@ -75,6 +75,7 @@ namespace IotHubCommander
                     var json = JsonConvert.SerializeObject(template);
                     var message = new Message(Encoding.UTF8.GetBytes(json));
                     message.MessageId = Guid.NewGuid().ToString();
+                    message.Ack = DeliveryAcknowledgement.Full;
 
                     await m_ServiceClient.SendAsync(m_DeviceId,message);
                     //

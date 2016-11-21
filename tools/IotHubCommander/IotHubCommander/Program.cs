@@ -29,7 +29,7 @@ namespace IotHubCommander
         static void Main(string[] args)
         {
             Console.WriteLine();
-            Helper.WriteLine($"Welcome to IotHub Commander tool.Version 1.0{Environment.NewLine}Copyright © daenet GmbH Frankfurt am Main", ConsoleColor.Cyan);
+            Helper.WriteLine($"Welcome to IotHub Commander Tool [Version 1.0]{Environment.NewLine}(c) 2016 daenet GmbH, Frankfurt am Main, Germany.", ConsoleColor.Cyan);
            
 
             bool isHelp = Helper.isHelpCall(args);
@@ -97,9 +97,7 @@ namespace IotHubCommander
         {
             //--listen=Feedback --connStr="" action=""
             string connStr = cmdConfig.GetArgument("connStr");
-            string action = cmdConfig.GetArgument("action", false);
-            CommandAction commandAction = (CommandAction)Enum.Parse(typeof(CommandAction), action);
-            IHubModule feedbackReceiver = new FeedbackReceiver(connStr: connStr, action: commandAction);
+            IHubModule feedbackReceiver = new FeedbackReceiver(connStr: connStr);
             feedbackReceiver.Execute().Wait();
         }
 

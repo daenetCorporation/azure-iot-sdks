@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Newtonsoft.Json;
 
 namespace IotHubCommander
 {
@@ -12,16 +13,14 @@ namespace IotHubCommander
         #region Member Variables 
 
         private ServiceClient m_ServiceClient;
-        private CommandAction m_Action;
 
         #endregion
 
         #region Public Methods
 
-        public FeedbackReceiver(string connStr, CommandAction action)
+        public FeedbackReceiver(string connStr)
         {
             this.m_ServiceClient = ServiceClient.CreateFromConnectionString(connStr);
-            this.m_Action = action;
         }
 
         /// <summary>
@@ -45,47 +44,34 @@ namespace IotHubCommander
         {
             var feedbackReceiver = m_ServiceClient.GetFeedbackReceiver();
 
-            Helper.WriteLine("\nReceiving Cloud to Device feedback from service",ConsoleColor.White);
+            Helper.WriteLine("\nReceiving Cloud to Device feedback from service", ConsoleColor.White);
             while (true)
             {
                 var feedbackBatch = await feedbackReceiver.ReceiveAsync();
                 if (feedbackBatch == null) continue;
-                Helper.WriteLine($"Received feedback{Environment.NewLine}{feedbackBatch.Records.Select(f => f.StatusCode)}", ConsoleColor.Yellow);
-
-                switch (m_Action)
+                int count = 1;
+                foreach (var item in feedbackBatch.Records)
                 {
-                    case CommandAction.Abandon:
-                        await feedbackReceiver.AbandonAsync(feedbackBatch);
-                        Helper.WriteLine($"Command abandoned successfully:)!", ConsoleColor.Yellow);
-                        break;
-                    case CommandAction.Complete:
-                        await feedbackReceiver.CompleteAsync(feedbackBatch);
-                        Helper.WriteLine($"Command complete successfully:)!", ConsoleColor.Yellow);
-                        break;
-                    case CommandAction.None:
-                    default:
-                        Helper.WriteLine("Enter 'a' for Abandon or 'c' for Complete", ConsoleColor.White);
-                        string whatTodo = Console.ReadLine();
-                        if (whatTodo == "a")
-                        {
-                            await feedbackReceiver.AbandonAsync(feedbackBatch);
-                            Helper.WriteLine("Command abandoned successfully :)!", ConsoleColor.Yellow);
-                        }
-                        else if (whatTodo == "c")
-                        {
-                            await feedbackReceiver.CompleteAsync(feedbackBatch);
-                            Helper.WriteLine("Command completed successfully :)!", ConsoleColor.Yellow);
-                        }
-                        else
-                        {
-                            Helper.WriteLine("Receiving of commands has been stopped!", ConsoleColor.White);
-                        }
-
-                        break;
+                    StringBuilder msg = new StringBuilder();
+                    msg.AppendLine("Getting Feedback ...");
+                    msg.AppendLine("Device ID: "+item.DeviceId);
+                    msg.AppendLine("Message ID: "+item.OriginalMessageId);
+                    msg.AppendLine("Time: "+item.EnqueuedTimeUtc.ToString());
+                    msg.AppendLine("Status: "+item.StatusCode.ToString());
+                    if (count % 2 == 0)
+                    {
+                        Helper.WriteLine(msg.ToString(), ConsoleColor.Yellow);
+                    }
+                    else
+                    {
+                        Helper.WriteLine(msg.ToString(), ConsoleColor.DarkYellow);
+                    }
+                    count++;
                 }
             }
         }
-
         #endregion
     }
 }
+       
+

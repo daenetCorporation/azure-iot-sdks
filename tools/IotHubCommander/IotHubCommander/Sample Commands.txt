@@ -6,15 +6,15 @@ Send Event Cloud to Device
 ---------------------------
 --send=Cloud --connStr=HostName=something.azure-devices.net;SharedAccessKeyName=iothubowner;SharedAccessKey=LIFJbieayddyDz5W3s9mnxQCzr5458FDLnZ8o8BLVXXyW6Cc= --deviceId=MyDevice --eventFile=TextData1.csv --tempFile=JsonTemplate.txt
 
-Feedback 
---------------------------
---listen=Device --connStr=HostName=something.azure-devices.net;SharedAccessKeyName=iothubowner;SharedAccessKey=LIFJbieayddyDz5W3s9mnxQCzr5458FDLnZ8o8BLVXXyW6Cc= --action=Abandon
---listen=Device --connStr=HostName=something.azure-devices.net;SharedAccessKeyName=iothubowner;SharedAccessKey=LIFJbieayddyDz5W3s9mnxQCzr5458FDLnZ8o8BLVXXyW6Cc= --action=Complete
-
 Cloud to Device Listener
 --------------------------
 --listen=Device --connStr=HostName=something.azure-devices.net;DeviceId=123456;SharedAccessKey=2CFsCmqyHvHHmRTkD8bR/YbEIU9IM= --action=Abandon
 --listen=Device --connStr=HostName=something.azure-devices.net;DeviceId=123456;SharedAccessKey=2CFsCmqyHvHHmRTkD8bR/YbEIU9IM= --action=Complete
+
+Feedback 
+--------------------------
+--listen=Device --connStr=HostName=something.azure-devices.net;SharedAccessKeyName=iothubowner;SharedAccessKey=LIFJbieayddyDz5W3s9mnxQCzr5458FDLnZ8o8BLVXXyW6Cc=
+--listen=Device --connStr=HostName=something.azure-devices.net;SharedAccessKeyName=iothubowner;SharedAccessKey=LIFJbieayddyDz5W3s9mnxQCzr5458FDLnZ8o8BLVXXyW6Cc=
 
 Read events form IoTHub or EventHub
 ------------------------------------

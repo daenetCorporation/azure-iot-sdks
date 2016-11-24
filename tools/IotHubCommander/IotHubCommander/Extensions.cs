@@ -30,7 +30,7 @@ namespace IotHubCommander
             if (provider.TryGet(name, out returnValue))
                 return returnValue;
             else if (isMandatory)
-                throw new ArgumentException($"'--{name}' command not found.In order to see more details '--help'");
+                throw new ArgumentException($"'--{name}' command not found. In order to see more details '--help'.");
             else
                 return default(String);
         }

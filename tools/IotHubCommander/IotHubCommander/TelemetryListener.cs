@@ -105,7 +105,7 @@ namespace IotHubCommander
             try
             {
                 var eventHubReceiver = m_EventHubClient.GetConsumerGroup(m_ConsumerGroup).CreateReceiver(partition, m_StartTime);
-                int count = 1;
+                bool isColor = true;
                 while (true)
                 {
                     EventData eventData = await eventHubReceiver.ReceiveAsync();
@@ -118,13 +118,13 @@ namespace IotHubCommander
                     string data = Encoding.UTF8.GetString(eventData.GetBytes());
 
                     StringBuilder stBuider = new StringBuilder();
-                    stBuider.Append($"x-opt-sequence-number : {eventData.SystemProperties["x-opt-sequence-number"]}");
-                    stBuider.Append($"x-opt-offset: {eventData.SystemProperties["x-opt-offset"]}");
-                    stBuider.Append($"x-opt-enqueued-time: {eventData.SystemProperties["x-opt-enqueued-time"]}");
-                    stBuider.Append($"Message received. Partition: {partition} Data: '{data}'");
+                    stBuider.AppendLine($"x-opt-sequence-number : {eventData.SystemProperties["x-opt-sequence-number"]}");
+                    stBuider.AppendLine($"x-opt-offset: {eventData.SystemProperties["x-opt-offset"]}");
+                    stBuider.AppendLine($"x-opt-enqueued-time: {eventData.SystemProperties["x-opt-enqueued-time"]}");
+                    stBuider.AppendLine($"Message received. Partition: {partition} Data: '{data}'");
                     //
                     // Different color
-                    if (count % 2 == 0)
+                    if (isColor)
                     {
                         Helper.WriteLine(stBuider.ToString(), ConsoleColor.Blue);
                     }
@@ -132,7 +132,7 @@ namespace IotHubCommander
                     {
                         Helper.WriteLine(stBuider.ToString(), ConsoleColor.White);
                     }
-                    count++;
+                    isColor = !isColor;
                     // readProperties(data);
                 }
             }
@@ -140,7 +140,6 @@ namespace IotHubCommander
             {
                 Console.WriteLine($"{ex}");
             }
-            //m_Event.Set();//TODO. Implement cancelation.
         }
 
         // Not used yet.

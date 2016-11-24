@@ -49,7 +49,7 @@ namespace IotHubCommander
             {
                 var feedbackBatch = await feedbackReceiver.ReceiveAsync();
                 if (feedbackBatch == null) continue;
-                int count = 1;
+                bool isColor = true;
                 foreach (var item in feedbackBatch.Records)
                 {
                     StringBuilder msg = new StringBuilder();
@@ -58,7 +58,7 @@ namespace IotHubCommander
                     msg.AppendLine("Message ID: "+item.OriginalMessageId);
                     msg.AppendLine("Time: "+item.EnqueuedTimeUtc.ToString());
                     msg.AppendLine("Status: "+item.StatusCode.ToString());
-                    if (count % 2 == 0)
+                    if (isColor)
                     {
                         Helper.WriteLine(msg.ToString(), ConsoleColor.Yellow);
                     }
@@ -66,7 +66,7 @@ namespace IotHubCommander
                     {
                         Helper.WriteLine(msg.ToString(), ConsoleColor.DarkYellow);
                     }
-                    count++;
+                    isColor = !isColor;
                 }
             }
         }

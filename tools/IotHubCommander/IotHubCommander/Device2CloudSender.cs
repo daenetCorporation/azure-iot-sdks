@@ -76,7 +76,7 @@ namespace IotHubCommander
         /// <returns></returns>
         private async Task sendEvent()
         {
-            int count = 2;
+            bool isColor =true;
             StreamReader readerEventFile = null;
             StreamReader readerTempFile = null;
             try
@@ -102,7 +102,7 @@ namespace IotHubCommander
                     DeviceClient deviceClient = DeviceClient.CreateFromConnectionString(m_ConnStr);
 
                     await deviceClient.SendEventAsync(message);
-                    if(count%2 == 0)
+                    if(isColor)
                     {
                        Helper.WriteLine($"Event sending ... {Environment.NewLine}{template}{Environment.NewLine} Event has been sent.",ConsoleColor.Green);
                     }
@@ -110,8 +110,7 @@ namespace IotHubCommander
                     {
                         Helper.WriteLine($"Event sending ... {Environment.NewLine}{template}{Environment.NewLine} Event has been sent.",ConsoleColor.DarkYellow);
                     }
-                    count++;
-                   // Thread.Sleep(3000);
+                    isColor = !isColor;
                 }
             }
             catch (Exception ex)

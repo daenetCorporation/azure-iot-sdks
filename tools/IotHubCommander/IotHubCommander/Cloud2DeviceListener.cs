@@ -26,7 +26,6 @@ namespace IotHubCommander
         #region Member Variables
 
         ConsoleColor m_FeedbackClr = ConsoleColor.Cyan; 
-        ConsoleColor m_MsgRvcClr = ConsoleColor.Cyan;
 
         private CommandAction Action;
         private string m_ConnStr;
@@ -76,25 +75,21 @@ namespace IotHubCommander
         /// <returns></returns>
         private async Task starReceivingCommands()
         {
-            bool magenta = true;
-            //Console.ForegroundColor = m_FeedbackClr;
+            bool isColor = true;
             Helper.WriteLine("\nStarted Receiving cloud to device messages from service",ConsoleColor.White);
-            //Console.ResetColor();
 
             while (true)
             {
                 Message receivedMessage = await m_DeviceClient.ReceiveAsync();
                 if (receivedMessage == null)
                 {
-                    Console.ForegroundColor = ConsoleColor.Gray;
-                    Console.WriteLine("Commend receiver timed out. Reconnected...");
-                    Console.ResetColor();
+                    Helper.WriteLine("Commend receiver timed out. Reconnected...",ConsoleColor.Gray);
                     continue;
                 }
 
                 var bytes = receivedMessage.GetBytes();
 
-                if (magenta)
+                if (isColor)
                 {
                     Helper.WriteLine($"Message Receiving ...{Environment.NewLine}Message ID: {receivedMessage.MessageId}{Environment.NewLine}Message: {Encoding.UTF8.GetString(bytes)}", ConsoleColor.DarkMagenta);
                 }
@@ -103,7 +98,7 @@ namespace IotHubCommander
                     Helper.WriteLine($"Message Receiving ...{Environment.NewLine}Message ID: {receivedMessage.MessageId}{Environment.NewLine}Message: {Encoding.UTF8.GetString(bytes)}", ConsoleColor.Green);
                 }
                 // switch color
-                magenta = !magenta;
+                isColor = !isColor;
 
                 try
                 {

@@ -150,9 +150,9 @@ namespace IotHubCommander
                             break;
                     }
                 }
-                catch (Exception ex)
+                catch (Exception)
                 {
-                    throw new Exception($"{ex.Message}");
+                    throw;
                 }
             }
         }

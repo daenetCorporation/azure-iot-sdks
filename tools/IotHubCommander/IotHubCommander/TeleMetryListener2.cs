@@ -23,7 +23,7 @@ namespace IotHubCommander
     /// <summary>
     /// Event listener from IotHub or EventHub
     /// </summary>
-    internal class TeleMetryListener : IHubModule
+    internal class TeleMetryListener2 : IHubModule
     {
         #region Member Variables
         /// <summary>
@@ -48,7 +48,7 @@ namespace IotHubCommander
         /// <param name="path">The Path to the Event Hub </param>
         /// <param name="startTime"></param>
         /// <param name="consumerGroup"></param>
-        public TeleMetryListener(string connStr, string path = "messages/events", DateTime? startTime = null, string consumerGroup = "$Default")
+        public TeleMetryListener2(string connStr, string path = "messages/events", DateTime? startTime = null, string consumerGroup = "$Default")
         {
             this.m_Path = path;
             this.m_ConsumerGroup = consumerGroup;
@@ -74,29 +74,20 @@ namespace IotHubCommander
         {
             var t = Task.Run(() =>
             {
-                Console.ForegroundColor = ConsoleColor.Yellow;
-
-                Console.WriteLine("Message Receiving ...\n");
+                Console.WriteLine("Receive messages\n");
 
                 var d2cPartitions = m_EventHubClient.GetRuntimeInformation().PartitionIds;
 
                 foreach (string partition in d2cPartitions)
                 {
-                    try
+                    var partitionTask = receiveMessagesAsync(partition);
+                    partitionTask.ContinueWith((abc) =>
                     {
-                        var eventHubReceiver = m_EventHubClient.GetConsumerGroup(m_ConsumerGroup).CreateReceiver(partition, m_StartTime);
-                        Console.WriteLine($"Connected to partition {partition}");
-                        var n = receiveMessagesAsync(eventHubReceiver, partition);
-                    }
-                    catch (Exception)
-                    {
-                        throw;
-                    }
-                    //partitionTask.ContinueWith((task) =>
-                    //{
-                    //    Console.WriteLine(task.Exception.Message);
-                    //},TaskContinuationOptions.OnlyOnFaulted);
-                    //Console.WriteLine($"Connected to partition {partition}");
+                        //throw new Exception(abc.Exception.Message);
+                        Console.WriteLine($" Partition {partition} failed!");
+                    }, TaskContinuationOptions.OnlyOnFaulted
+                    );
+                    partitionTask.Start();
                 }
             });
 
@@ -104,6 +95,7 @@ namespace IotHubCommander
 
             return t;
         }
+
         #endregion
 
         #region Private Methods
@@ -113,49 +105,58 @@ namespace IotHubCommander
         /// </summary>
         /// <param name="partition"></param>
         /// <returns></returns>
-        private async Task receiveMessagesAsync(EventHubReceiver eventHubReceiver, string partition)
+        /// 
+
+        private Task receiveMessagesAsync(string partition)
         {
-            try
+            var t = new Task(() =>
             {
-                //var eventHubReceiver = m_EventHubClient.GetConsumerGroup(m_ConsumerGroup).CreateReceiver(partition, m_StartTime);
-                bool isColor = true;
-                while (true)
+                try
                 {
-                    EventData eventData = await eventHubReceiver.ReceiveAsync();
-                    if (eventData == null)
-                    {
-                        Console.WriteLine($"Partition: {partition}. No events received ...");
-                        continue;
-                    }
+                    var eventHubReceiver = m_EventHubClient.GetConsumerGroup(m_ConsumerGroup).CreateReceiver(partition, m_StartTime);
+                    Helper.WriteLine($"Connected to partition {partition}", ConsoleColor.Yellow);
 
-                    string data = Encoding.UTF8.GetString(eventData.GetBytes());
+                    bool isColor = true;
+                    while (true)
+                    {
+                        EventData eventData = eventHubReceiver.ReceiveAsync().Result;
+                        if (eventData == null)
+                        {
+                            Console.WriteLine($"Partition: {partition}. No events received ...");
+                            continue;
+                        }
 
-                    StringBuilder stBuider = new StringBuilder();
-                    stBuider.AppendLine($"x-opt-sequence-number : {eventData.SystemProperties["x-opt-sequence-number"]}");
-                    stBuider.AppendLine($"x-opt-offset: {eventData.SystemProperties["x-opt-offset"]}");
-                    stBuider.AppendLine($"x-opt-enqueued-time: {eventData.SystemProperties["x-opt-enqueued-time"]}");
-                    stBuider.AppendLine($"Message received. Partition: {partition} Data: '{data}'");
-                    //
-                    // Different color
-                    if (isColor)
-                    {
-                        Helper.WriteLine(stBuider.ToString(), ConsoleColor.Blue);
+                        string data = Encoding.UTF8.GetString(eventData.GetBytes());
+
+                        StringBuilder stBuider = new StringBuilder();
+                        stBuider.AppendLine($"x-opt-sequence-number : {eventData.SystemProperties["x-opt-sequence-number"]}");
+                        stBuider.AppendLine($"x-opt-offset: {eventData.SystemProperties["x-opt-offset"]}");
+                        stBuider.AppendLine($"x-opt-enqueued-time: {eventData.SystemProperties["x-opt-enqueued-time"]}");
+                        stBuider.AppendLine($"Message received. Partition: {partition} Data: '{data}'");
+                        //
+                        // Different color
+                        if (isColor)
+                        {
+                            Helper.WriteLine(stBuider.ToString(), ConsoleColor.Blue);
+                        }
+                        else
+                        {
+                            Helper.WriteLine(stBuider.ToString(), ConsoleColor.White);
+                        }
+                        isColor = !isColor;
+                        // readProperties(data);
                     }
-                    else
-                    {
-                        Helper.WriteLine(stBuider.ToString(), ConsoleColor.White);
-                    }
-                    isColor = !isColor;
-                    // readProperties(data);
                 }
-            }
-            catch (Exception)
-            {
-                throw;
-            }
-        }
+                catch (Exception)
+                {
+                    throw;
+                }
+            });
 
-        // Not used yet.
+            return t;
+        }
+        #endregion
+        //Not used yet.
         //private static void readProperties(string data)
         //{
         //    try
@@ -166,8 +167,6 @@ namespace IotHubCommander
         //    catch (Exception ex)
         //    {
         //        Console.WriteLine(data);
-        //    }
-        //}
-        #endregion
     }
 }
+       

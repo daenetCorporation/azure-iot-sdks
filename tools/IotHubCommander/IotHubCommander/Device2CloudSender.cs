@@ -113,9 +113,9 @@ namespace IotHubCommander
                     isColor = !isColor;
                 }
             }
-            catch (Exception ex)
+            catch (Exception)
             {
-                throw new Exception($"{ex}");
+                throw;
             }
         }
     }

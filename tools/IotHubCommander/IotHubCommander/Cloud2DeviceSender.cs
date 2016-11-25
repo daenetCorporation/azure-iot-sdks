@@ -93,9 +93,9 @@ namespace IotHubCommander
                     // Thread.Sleep(3000);
                 }
             }
-            catch (Exception ex)
+            catch (Exception)
             {
-                throw new Exception($"{ex}");
+                throw;
             }
         }
 

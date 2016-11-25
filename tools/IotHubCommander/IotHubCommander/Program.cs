@@ -165,14 +165,14 @@ namespace IotHubCommander
             DateTime time = Helper.getTime(startTime);
             if (consumerGroup != null)
             {
-                IHubModule module = new TelemetryListener(connStr, path, time, consumerGroup);
+                IHubModule module = new TeleMetryListener(connStr, path, time, consumerGroup);
                 var t = module.Execute();
-
+                
                 t.Wait(Timeout.Infinite);
             }
             else
             {
-                IHubModule module = new TelemetryListener(connStr, path, time);
+                IHubModule module = new TeleMetryListener(connStr, path, time);
                 var t = module.Execute();
 
                 t.Wait();

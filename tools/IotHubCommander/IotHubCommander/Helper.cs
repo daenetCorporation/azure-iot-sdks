@@ -183,6 +183,28 @@ namespace IotHubCommander
             }
             Console.ResetColor();
         }
+
+        /// <summary>
+        /// Create Environment Variable
+        /// </summary>
+        public static void CreateEnvironmentVariable()
+        {
+            if (Environment.GetEnvironmentVariable("Path") == null)
+            {
+                var path = Environment.CurrentDirectory;
+                Environment.SetEnvironmentVariable("Path", path, EnvironmentVariableTarget.User);
+            }
+            else
+            {
+                var path = Environment.CurrentDirectory;
+                string oldValue = string.Format($"{Environment.GetEnvironmentVariable("Path", EnvironmentVariableTarget.User)}");
+                if (!oldValue.Contains(path))
+                {
+                    string value = string.Format($"{oldValue};{path}");
+                    Environment.SetEnvironmentVariable("Path", value, EnvironmentVariableTarget.User);
+                }
+            }
+        }
         #endregion
     }
 }

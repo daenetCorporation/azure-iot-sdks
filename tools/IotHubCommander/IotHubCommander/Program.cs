@@ -31,8 +31,9 @@ namespace IotHubCommander
             Console.WriteLine();
             Helper.WriteLine($"Welcome to IotHub Commander Tool [Version 1.0]{Environment.NewLine}(c) 2016 daenet GmbH, Frankfurt am Main, Germany.", ConsoleColor.Cyan);
            
-
             bool isHelp = Helper.isHelpCall(args);
+            //Set up Environment variable
+            Helper.CreateEnvironmentVariable();
             //
             //Check wether help is needed or not
             if (isHelp)

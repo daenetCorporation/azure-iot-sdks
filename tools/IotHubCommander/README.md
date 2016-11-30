@@ -1,14 +1,6 @@
 ##Welcome to IotHub Commander   :)
 
-This is .Net Console Application, which send event to Device to Cloud, Cloud to Device and read events from IotHub or EventHub.
-
-### Build Environment
-
-* Create an Environment Variable.
-
-![Alt text](https://github.com/daenetCorporation/azure-iot-sdks/blob/develop/tools/IotHubCommander/Environment%20Variable.PNG?raw=true "Environment Variable creating")
-
-* Run command promt and write commands.
+IotHub Commander is .Net Console Application, which send event to Device to Cloud, Cloud to Device, read event from Cloud, geting feedback and read events from IotHub or EventHub using Command promt.
 
 ### Send event Device to Cloud 
 

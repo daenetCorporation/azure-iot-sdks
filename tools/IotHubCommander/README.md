@@ -7,7 +7,25 @@ Azure IoT Hub is a fully managed service that helps enable reliable and secure b
 * Getting feedback
 * Read events from IotHub or EventHub
 
-## Evironment Setup
+### Evironment Setup
+* Download setup.exe file from [here](https://github.com/daenetCorporation/azure-iot-sdks/blob/develop/tools/IotHubCommander/IotHubCommander/publish/setup.exe) and install.
+* Write your event semicolon separated values in CSV file. i.e  
+```csv
+29.00;1987.12;3;1;  
+31.21;1981.11;5;1;  
+29.00;1987.12;3;0;  
+31.21;1981.11;5;0;  
+```
+* Write JSON formated Template file (Template.txt). i.e  
+```JSON
+{
+   "Temp" : @1,
+   "Humidity": @2,
+   "Counter": @3,
+   "SwitchValue": @4
+}
+```
+* Write below commands for sending events.
 
 ### Send event Device to Cloud 
 

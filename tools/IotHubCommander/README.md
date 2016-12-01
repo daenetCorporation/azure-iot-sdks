@@ -25,7 +25,7 @@ Azure IoT Hub is a fully managed service that helps enable reliable and secure b
    "SwitchValue": @4
 }
 ```
-* Write below commands for sending events.
+* Write commands below for sending events.
 
 ### Send event Device to Cloud 
 

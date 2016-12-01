@@ -24,7 +24,8 @@
     <UpdateRequired>false</UpdateRequired>
     <MapFileExtensions>true</MapFileExtensions>
     <InstallUrl>https://raw.githubusercontent.com/daenetCorporation/azure-iot-sdks/develop/tools/IotHubCommander/IotHubCommander/publish/</InstallUrl>
-    <ApplicationRevision>3</ApplicationRevision>
+    <PublisherName>daenet GmbH, Frankfurt am Main, Germany.</PublisherName>
+    <ApplicationRevision>4</ApplicationRevision>
     <ApplicationVersion>1.0.0.%2a</ApplicationVersion>
     <UseApplicationTrust>false</UseApplicationTrust>
     <PublishWizardCompleted>true</PublishWizardCompleted>

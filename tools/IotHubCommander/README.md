@@ -1,6 +1,13 @@
-##Welcome to IotHub Commander   :)
+## Welcome to IotHubCommander   :)
 
-IotHub Commander is .Net Console Application, which send event to Device to Cloud, Cloud to Device, read event from Cloud, geting feedback and read events from IotHub or EventHub using Command promt.
+Azure IoT Hub is a fully managed service that helps enable reliable and secure bi-directional communications between millions of devices and a solution back end. IotHubCommander is .Net Console Application, which sends event using some particular commands. IotHubCommander sends events -
+* Device to Cloud
+* Cloud to Device
+* Read events from Cloud
+* Getting feedback
+* Read events from IotHub or EventHub
+
+## Evironment Setup
 
 ### Send event Device to Cloud 
 

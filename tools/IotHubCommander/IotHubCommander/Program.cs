@@ -87,7 +87,7 @@ namespace IotHubCommander
                     Helper.WriteLine(ex.ToString(), ConsoleColor.Magenta);
                 }
             }
-            Console.ReadKey();
+            Console.ReadLine();
         }
 
         /// <summary>
